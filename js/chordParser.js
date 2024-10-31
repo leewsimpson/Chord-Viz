@@ -1,5 +1,25 @@
 import { chordTypes, notePositions } from './constants.js';
 
+/**
+ * Parses a chord name and returns its components and notes.
+ * 
+ * @param {string} chordName - The chord name to parse (e.g., 'C', 'Cm', 'C#maj7', 'Db/F')
+ * @returns {Object|null} An object containing the parsed chord information, or null if parsing fails
+ * @property {string} chordName - The original chord name input
+ * @property {string} root - The root note of the chord (e.g., 'C', 'C#', 'Db')
+ * @property {string} type - The chord type (e.g., '', 'm', 'maj7', '7', 'sus4', 'aug', 'dim')
+ * @property {string|null} bassNote - The bass note if specified, or null
+ * @property {number[]} chordNotes - Array of MIDI note numbers representing the chord notes
+ * @property {number|null} bassNoteValue - MIDI note number of the bass note, or null if not specified
+ * 
+ * Requirements:
+ * - Supports major, minor, 7th, major 7th, sus4, augmented, diminished, 6th, 9th, 11th, 13th, and add9 chords
+ * - Handles both uppercase and lowercase input
+ * - Recognizes both sharp (#) and flat (b) notations
+ * - Supports slash chords (e.g., C/E)
+ * - Returns null for invalid chord names
+ * - Chord notes are represented as MIDI note numbers (0-11, where 0 is C)
+ */
 export function parseChord(chordName) {
     const originalChordName = chordName;
     chordName = chordName.toUpperCase();
