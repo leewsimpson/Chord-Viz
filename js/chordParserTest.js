@@ -85,7 +85,5 @@ function arraysEqual(a, b) {
     return a.every((val, index) => val === b[index]);
 }
 
-// Run tests only if this script is being run directly
-if (import.meta.url === import.meta.resolve('./chordParserTest.js')) {
-    runTests();
-}
+// Run tests
+runTests();

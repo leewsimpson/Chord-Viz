@@ -33,14 +33,12 @@ export function parseChord(chordName) {
 
     let [_, root, type, bassNote] = match;
 
-    // Normalize root and bassNote
-    root = root.charAt(0).toUpperCase() + root.slice(1);
-    if (bassNote) {
-        bassNote = bassNote.charAt(0).toUpperCase() + bassNote.slice(1);
-    }
-
-    // Lowercase type
+    // Normalize root, type, and bassNote
+    root = root.charAt(0).toUpperCase() + root.slice(1).toLowerCase();
     type = type.toLowerCase();
+    if (bassNote) {
+        bassNote = bassNote.charAt(0).toUpperCase() + bassNote.slice(1).toLowerCase();
+    }
 
     // Check if root is valid
     if (!(root in notePositions)) {
@@ -56,7 +54,7 @@ export function parseChord(chordName) {
     const intervals = chordTypes[type];
 
     // Build chordNotes in the order specified by intervals
-    let chordNotes = intervals.map(interval => (baseNote + interval) % 12);
+    let chordNotes = intervals.map(interval => baseNote + interval);
 
     let bassNoteValue = null;
 
@@ -68,16 +66,8 @@ export function parseChord(chordName) {
 
         bassNoteValue = notePositions[bassNote];
 
-        if (!chordNotes.includes(bassNoteValue)) {
-            // If the bass note is not in the chord, add it as the first note
-            chordNotes.unshift(bassNoteValue);
-        } else {
-            // If the bass note is in the chord, move it to the front
-            chordNotes = [
-                bassNoteValue,
-                ...chordNotes.filter(note => note !== bassNoteValue)
-            ];
-        }
+        // For slash chords, we don't modify the chord notes
+        // We just keep track of the bass note separately
     }
 
     console.log('Parsed chord:', {
