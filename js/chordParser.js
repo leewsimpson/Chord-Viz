@@ -1,122 +1,66 @@
-import { notePositions } from './constants.js';
-
-const chordTypes = {
-    '': [0, 4, 7],
-    'm': [0, 3, 7],
-    'dim': [0, 3, 6],
-    'aug': [0, 4, 8],
-    '7': [0, 4, 7, 10],
-    'M7': [0, 4, 7, 11],
-    'maj7': [0, 4, 7, 11],
-    'm7': [0, 3, 7, 10],
-    'm7b5': [0, 3, 6, 10],
-    'ø': [0, 3, 6, 10],
-    'sus4': [0, 5, 7],
-    'sus2': [0, 2, 7],
-    '6': [0, 4, 7, 9],
-    'm6': [0, 3, 7, 9],
-    '9': [0, 4, 7, 10, 14],
-    'm9': [0, 3, 7, 10, 14],
-    '11': [0, 4, 7, 10, 14, 17],
-    '13': [0, 4, 7, 10, 14, 17, 21],
-    'add9': [0, 4, 7, 14]
-};
+import { notePositions, chordTypes } from './constants.js';
 
 /**
  * Parses a chord name and returns its components and notes.
  * 
  * @param {string} chordName - The chord name to parse (e.g., 'C', 'Cm', 'C#maj7', 'Db/F')
  * @returns {Object|null} An object containing the parsed chord information, or null if parsing fails
- * @property {string} chordName - The original chord name input
- * @property {string} root - The root note of the chord (e.g., 'C', 'C#', 'Db')
- * @property {string} type - The chord type (e.g., '', 'm', 'maj7', '7', 'sus4', 'aug', 'dim')
- * @property {string|null} bassNote - The bass note if specified, or null
- * @property {number[]} chordNotes - Array of MIDI note numbers representing the chord notes. starts from 0 and can span multiple octaves
- * @property {number|null} bassNoteValue - MIDI note number of the bass note, or null if not specified
- * 
- * Requirements:
- * - Supports major, minor, 7th, major 7th, sus4, augmented, diminished, 6th, 9th, 11th, 13th, and add9 chords
- * - Handles both uppercase and lowercase input
- * - Recognizes both sharp (#) and flat (b) notations
- * - Supports slash chords (e.g., C/E)
- *   - Reorders the chord if the bass note is in the chord
- *   - Shows a lower octave bass note if the bass note is not in the chord
- * - Returns null for invalid chord names
- * - Chord notes are represented as MIDI note numbers (0-11, where 0 is C)
  */
 export function parseChord(chordName) {
-    const originalChordName = chordName;
-    chordName = chordName.trim();
-
-    const regex = /^([A-Ga-g](?:#|b)?)(.*?)(?:\/([A-Ga-g](?:#|b)?))?$/;
+    const regex = /^([A-Ga-g][#b]?)([^/]*)(?:\/([A-Ga-g][#b]?))?$/i;
     const match = chordName.match(regex);
     if (!match) return null;
 
-    let [_, root, type, bassNote] = match;
+    let [, root, type, bassNote] = match;
+    root = normalizeNote(root);
+    type = normalizeType(type);
+    bassNote = bassNote ? normalizeNote(bassNote) : null;
 
-    root = root.charAt(0).toUpperCase() + root.slice(1).toLowerCase();
-    type = type.toLowerCase();
-    if (bassNote) {
-        bassNote = bassNote.charAt(0).toUpperCase() + bassNote.slice(1).toLowerCase();
-    }
+    if (!root || !(root in notePositions)) return null;
 
-    if (!(root in notePositions)) {
-        return null;
-    }
-
-    if (!(type in chordTypes)) {
-        // Special case for 'M7' which might be interpreted as 'm7'
-        if (type.toUpperCase() === 'M7' || type.toLowerCase() === 'maj7') {
-            type = 'M7';
-        } else if (type.toLowerCase() === 'm7') {
-            type = 'm7';
-        } else {
-            type = '';
-        }
-    }
-
-    const baseNote = notePositions[root];
-    const intervals = chordTypes[type];
-
-    let chordNotes = [];
-    let previousNote = baseNote - 1;  // Initialize with a value lower than baseNote
-
-    for (let interval of intervals) {
-        let note = baseNote + interval;
-        while (note <= previousNote) {
-            note += 12;
-        }
-        chordNotes.push(note);
-        previousNote = note;
-    }
+    const rootValue = notePositions[root];
+    const intervals = chordTypes[type] || chordTypes[''];
+    let chordNotes = intervals.map(interval => (rootValue + interval) % 12);
 
     let bassNoteValue = null;
-
     if (bassNote) {
-        if (!(bassNote in notePositions)) {
-            return null;
-        }
-
         bassNoteValue = notePositions[bassNote];
-
-        // Adjust the bass note to be below the root note
-        while (bassNoteValue >= baseNote) {
-            bassNoteValue -= 12;
+        if (chordNotes.includes(bassNoteValue % 12)) {
+            // Reorder chord if bass note is in the chord
+            chordNotes = chordNotes.filter(note => note !== bassNoteValue % 12);
+            chordNotes.unshift(bassNoteValue % 12);
+        } else {
+            // Add bass note if it's not in the chord
+            chordNotes.unshift(bassNoteValue % 12);
         }
+    }
 
-        // Remove any duplicate of the bass note from the chord
-        chordNotes = chordNotes.filter(note => note % 12 !== bassNoteValue % 12);
-
-        // Add the bass note to the beginning of the chord
-        chordNotes.unshift(bassNoteValue);
+    // Adjust notes to span multiple octaves if necessary
+    for (let i = 1; i < chordNotes.length; i++) {
+        while (chordNotes[i] <= chordNotes[i-1]) {
+            chordNotes[i] += 12;
+        }
     }
 
     return {
-        chordName: originalChordName,
+        chordName,
         root,
         type,
-        bassNote: bassNote || null,
+        bassNote,
         chordNotes,
         bassNoteValue
     };
+}
+
+function normalizeNote(note) {
+    return note.charAt(0).toUpperCase() + note.slice(1).toLowerCase();
+}
+
+function normalizeType(type) {
+    type = type.toLowerCase();
+    if (type === 'maj7' || type === 'm7') return type;
+    if (type === '7' || type === 'dim' || type === 'aug' || type === 'sus4' || type === 'sus2') return type;
+    if (type === '9' || type === '11' || type === '13' || type === 'add9') return type;
+    if (type === 'm') return type;
+    return '';
 }
