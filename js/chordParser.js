@@ -56,7 +56,7 @@ export function parseChord(chordName) {
     // Build chordNotes in the order specified by intervals
     let chordNotes = intervals.map(interval => {
         let note = (baseNote + interval) % 12;
-        return note;
+        return note < 0 ? note + 12 : note;
     });
 
     let bassNoteValue = null;
