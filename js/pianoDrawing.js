@@ -67,7 +67,7 @@ export function highlightKeys(ctx, { chordNotes, bassNote }) {
 
     // Highlight white keys first
     chordNotes.forEach(note => {
-        const noteValue = ((note % 12) + 12) % 12;  // Ensure positive value
+        const noteValue = note % 12;
         const octave = Math.floor(note / 12);
 
         if (whiteKeyIndices.includes(noteValue)) {
@@ -97,7 +97,7 @@ export function highlightKeys(ctx, { chordNotes, bassNote }) {
 
     // Highlight black keys last
     chordNotes.forEach(note => {
-        const noteValue = ((note % 12) + 12) % 12;  // Ensure positive value
+        const noteValue = note % 12;
         const octave = Math.floor(note / 12);
 
         if (!whiteKeyIndices.includes(noteValue)) {
