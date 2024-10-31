@@ -54,7 +54,7 @@ export function parseChord(chordName) {
     const intervals = chordTypes[type];
 
     // Build chordNotes in the order specified by intervals
-    let chordNotes = intervals.map(interval => baseNote + interval);
+    let chordNotes = intervals.map(interval => (baseNote + interval) % 12);
 
     let bassNoteValue = null;
 
@@ -66,8 +66,15 @@ export function parseChord(chordName) {
 
         bassNoteValue = notePositions[bassNote];
 
-        // For slash chords, we don't modify the chord notes
-        // We just keep track of the bass note separately
+        // For slash chords, we modify the chord notes
+        if (!chordNotes.includes(bassNoteValue)) {
+            chordNotes.unshift(bassNoteValue);
+        } else {
+            chordNotes = [
+                bassNoteValue,
+                ...chordNotes.filter(note => note !== bassNoteValue)
+            ];
+        }
     }
 
     console.log('Parsed chord:', {

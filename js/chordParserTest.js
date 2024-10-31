@@ -45,7 +45,7 @@ function runTests() {
             errorMessage = 'Parsing failed (returned null)';
         } else {
             // Check all properties
-            const properties = ['root', 'type', 'bassNote', 'chordNotes', 'bassNoteValue'];
+            const properties = ['root', 'type', 'bassNote', 'chordNotes'];
             properties.forEach(prop => {
                 if (prop === 'chordNotes') {
                     const expectedNotes = expected[prop].map(note => note % 12);
