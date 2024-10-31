@@ -10,6 +10,7 @@ const chordTypes = {
     'maj7': [0, 4, 7, 11],
     'm7': [0, 3, 7, 10],
     'm7b5': [0, 3, 6, 10],
+    'ø': [0, 3, 6, 10], // Alternative notation for m7b5
     'sus4': [0, 5, 7],
     'sus2': [0, 2, 7],
     '6': [0, 4, 7, 9],
@@ -73,7 +74,7 @@ export function parseChord(chordName) {
 
     // Special case for 'M7' and 'maj7'
     if (type === 'M7' || type === 'maj7') {
-        type = 'M7';
+        type = 'maj7';
     }
 
     const baseNote = notePositions[root];
@@ -84,6 +85,9 @@ export function parseChord(chordName) {
         let note = (baseNote + interval) % 12;
         return note;
     });
+
+    // Normalize chordNotes to be relative to C (0)
+    chordNotes = chordNotes.map(note => (note - baseNote + 12) % 12);
 
     let bassNoteValue = null;
 

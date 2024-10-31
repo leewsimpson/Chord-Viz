@@ -38,7 +38,7 @@ const testCases = [
     { input: 'G/B', expected: { root: 'G', type: '', bassNote: 'B', chordNotes: [11, 7, 14] } },
     { input: 'D/F#', expected: { root: 'D', type: '', bassNote: 'F#', chordNotes: [6, 2, 9] } },
     
-    { input: 'G', expected: { root: 'G', type: '', bassNote: null, chordNotes: [4, 7] } },
+    { input: 'G', expected: { root: 'G', type: '', bassNote: null, chordNotes: [7, 11, 2] } },
     { input: 'c', expected: { root: 'C', type: '', bassNote: null, chordNotes: [0, 4, 7] } },
     { input: 'Cm', expected: { root: 'C', type: 'm', bassNote: null, chordNotes: [0, 3, 7] } },
     { input: 'C#', expected: { root: 'C#', type: '', bassNote: null, chordNotes: [0, 4, 7] } },
