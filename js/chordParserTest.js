@@ -3,7 +3,43 @@ import { notePositions } from './constants.js';
 
 const testCases = [
     { input: 'InvalidChord', expected: null },
+    // Major chords
     { input: 'C', expected: { root: 'C', type: '', bassNote: null, chordNotes: [0, 4, 7] } },
+    { input: 'G', expected: { root: 'G', type: '', bassNote: null, chordNotes: [7, 11, 14] } },
+    { input: 'F', expected: { root: 'F', type: '', bassNote: null, chordNotes: [5, 9, 12] } },
+
+    // Minor chords
+    { input: 'Am', expected: { root: 'A', type: 'm', bassNote: null, chordNotes: [9, 12, 16] } },
+    { input: 'Dm', expected: { root: 'D', type: 'm', bassNote: null, chordNotes: [2, 5, 9] } },
+    { input: 'Em', expected: { root: 'E', type: 'm', bassNote: null, chordNotes: [4, 7, 11] } },
+
+    // Diminished chords
+    { input: 'Bdim', expected: { root: 'B', type: 'dim', bassNote: null, chordNotes: [11, 14, 17] } },
+    { input: 'C#dim', expected: { root: 'C#', type: 'dim', bassNote: null, chordNotes: [1, 4, 7] } },
+
+    // Augmented chords
+    { input: 'Caug', expected: { root: 'C', type: 'aug', bassNote: null, chordNotes: [0, 4, 8] } },
+    { input: 'Gaug', expected: { root: 'G', type: 'aug', bassNote: null, chordNotes: [7, 11, 15] } },
+
+    // Seventh chords
+    { input: 'C7', expected: { root: 'C', type: '7', bassNote: null, chordNotes: [0, 4, 7, 10] } },
+    { input: 'D7', expected: { root: 'D', type: '7', bassNote: null, chordNotes: [2, 6, 9, 12] } },
+    { input: 'A7', expected: { root: 'A', type: '7', bassNote: null, chordNotes: [9, 13, 16, 19] } },
+
+    // Major seventh chords
+    { input: 'CM7', expected: { root: 'C', type: 'M7', bassNote: null, chordNotes: [0, 4, 7, 11] } },
+    { input: 'FM7', expected: { root: 'F', type: 'M7', bassNote: null, chordNotes: [5, 9, 12, 16] } },
+
+    // Suspended chords
+    { input: 'Csus4', expected: { root: 'C', type: 'sus4', bassNote: null, chordNotes: [0, 5, 7] } },
+    { input: 'Dsus2', expected: { root: 'D', type: 'sus2', bassNote: null, chordNotes: [2, 4, 9] } },
+
+    // Chords with specified bass notes
+    { input: 'C/E', expected: { root: 'C', type: '', bassNote: 'E', chordNotes: [4, 0, 7] } },
+    { input: 'G/B', expected: { root: 'G', type: '', bassNote: 'B', chordNotes: [11, 7, 14] } },
+    { input: 'D/F#', expected: { root: 'D', type: '', bassNote: 'F#', chordNotes: [6, 2, 9] } },
+    
+    { input: 'G', expected: { root: 'G', type: '', bassNote: null, chordNotes: [4, 7] } },
     { input: 'c', expected: { root: 'C', type: '', bassNote: null, chordNotes: [0, 4, 7] } },
     { input: 'Cm', expected: { root: 'C', type: 'm', bassNote: null, chordNotes: [0, 3, 7] } },
     { input: 'C#', expected: { root: 'C#', type: '', bassNote: null, chordNotes: [0, 4, 7] } },
