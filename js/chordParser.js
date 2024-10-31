@@ -66,7 +66,7 @@ export function parseChord(chordName) {
 
     if (!(type in chordTypes)) {
         // Special case for 'M7' which might be interpreted as 'm7'
-        if (type.toUpperCase() === 'M7') {
+        if (type.toUpperCase() === 'M7' || type.toLowerCase() === 'maj7') {
             type = 'M7';
         } else {
             type = '';
@@ -76,21 +76,22 @@ export function parseChord(chordName) {
     const baseNote = notePositions[root];
     const intervals = chordTypes[type];
 
-    let chordNotes = intervals.map(interval => (baseNote + interval));
+    let chordNotes = intervals.map(interval => {
+        let note = (baseNote + interval) % 12;
+        if (note < baseNote) note += 12;
+        return note;
+    });
 
-    // Adjust octaves for notes that wrap around
-    let previousNote = baseNote - 1;
-    for (let i = 0; i < chordNotes.length; i++) {
-        while (chordNotes[i] <= previousNote) {
+    // Ensure the chord spans no more than two octaves
+    for (let i = 1; i < chordNotes.length; i++) {
+        while (chordNotes[i] < chordNotes[i-1]) {
             chordNotes[i] += 12;
         }
-        previousNote = chordNotes[i];
     }
 
-    // Ensure all notes are within two octaves of the base note
-    const twoOctaves = 24;
-    for (let i = 0; i < chordNotes.length; i++) {
-        while (chordNotes[i] >= baseNote + twoOctaves) {
+    // If the highest note is more than two octaves above the lowest, adjust
+    while (chordNotes[chordNotes.length - 1] - chordNotes[0] > 24) {
+        for (let i = 1; i < chordNotes.length; i++) {
             chordNotes[i] -= 12;
         }
     }
