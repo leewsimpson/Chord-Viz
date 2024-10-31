@@ -1,6 +1,9 @@
 import { chordTypes, notePositions } from './constants.js';
 
 export function parseChord(chordName) {
+    // Convert the chord name to uppercase
+    chordName = chordName.toUpperCase();
+    
     const match = chordName.match(/^([A-G][#b]?)([^/]*)(?:\/([A-G][#b]?))?$/);
     if (!match) return null;
 
