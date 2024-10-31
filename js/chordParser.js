@@ -16,44 +16,15 @@ export function parseChord(chordName) {
 
     // Convert type to lowercase for matching with chordTypes
     const lowerType = type.toLowerCase();
-    if (!(lowerType in chordTypes)) return null;
+    if (!(lowerType in chordTypes)) {
+        // If the chord type is not recognized, default to a major chord
+        lowerType = '';
+    }
     
-    if (bassNote && !(bassNote in notePositions)) return null;
-
     const baseNote = notePositions[root];
     let chordNotes = chordTypes[lowerType].map(interval => (baseNote + interval) % 12);
 
-    if (bassNote) {
-        const bassNoteValue = notePositions[bassNote] % 12;
-        
-        // Check if the bass note is in the chord
-        const bassNoteInChord = chordNotes.includes(bassNoteValue);
-        
-        if (bassNoteInChord) {
-            // Reorder the notes to start with the bass note (like an inversion)
-            chordNotes = chordNotes.filter(note => note !== bassNoteValue);
-            chordNotes.unshift(bassNoteValue);
-        } else {
-            // Add the bass note to the chord
-            chordNotes.unshift(bassNoteValue);
-        }
-
-        // Adjust octaves
-        let currentOctave = 4; // Start from middle C (C4)
-        chordNotes = chordNotes.map((note, index) => {
-            if (index > 0 && note <= chordNotes[index - 1]) {
-                currentOctave++;
-            }
-            return note + currentOctave * 12;
-        });
-
-        return {
-            chordNotes,
-            bassNote: chordNotes[0]
-        };
-    }
-
-    // Adjust octaves for chords without bass note
+    // Adjust octaves for chord notes
     let currentOctave = 4; // Start from middle C (C4)
     chordNotes = chordNotes.map((note, index) => {
         if (index > 0 && note <= chordNotes[index - 1]) {
@@ -62,6 +33,13 @@ export function parseChord(chordName) {
         return note + currentOctave * 12;
     });
 
+    let bassNoteValue = null;
+    if (bassNote) {
+        bassNoteValue = notePositions[bassNote];
+        if (!chordNotes.includes(bassNoteValue % 12)) {
+            chordNotes.unshift(bassNoteValue + 48); // Add bass note an octave lower
+        }
+    }
 
     // Debug output
     console.log('Parsed chord:', {
@@ -71,15 +49,13 @@ export function parseChord(chordName) {
         bassNote,
         result: { 
             chordNotes, 
-            bassNote: bassNote ? chordNotes[0] : null,
-            chordNotesWithOctaves: chordNotes.map(note => note + 48) // Adding octave information
+            bassNote: bassNoteValue,
         }
     });
 
     return {
-        chordNotes: chordNotes.map(note => note + 48), // Adding octave information
-        bassNote: bassNote ? chordNotes[0] + 48 : null
+        chordNotes,
+        bassNote: bassNoteValue
     };
-
 }
 
