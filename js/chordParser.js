@@ -78,20 +78,13 @@ export function parseChord(chordName) {
     const baseNote = notePositions[root];
     const intervals = chordTypes[type];
 
-    let chordNotes = intervals.map(interval => {
+    let chordNotes = intervals.map((interval, index) => {
         let note = baseNote + interval;
-        while (note < baseNote) {
+        while (note <= baseNote || (index > 0 && note <= chordNotes[index - 1])) {
             note += 12;
         }
         return note;
     });
-
-    // Ensure the chord spans multiple octaves if necessary
-    for (let i = 1; i < chordNotes.length; i++) {
-        while (chordNotes[i] <= chordNotes[i-1]) {
-            chordNotes[i] += 12;
-        }
-    }
 
     let bassNoteValue = null;
 
@@ -102,16 +95,13 @@ export function parseChord(chordName) {
 
         bassNoteValue = notePositions[bassNote];
 
-        // Adjust the bass note to be below the root note if necessary
-        while (bassNoteValue >= chordNotes[0]) {
+        // Adjust the bass note to be below the root note
+        while (bassNoteValue >= baseNote) {
             bassNoteValue -= 12;
         }
 
-        // If the bass note is already in the chord, remove it from its current position
-        const bassNoteIndex = chordNotes.indexOf(bassNoteValue % 12);
-        if (bassNoteIndex !== -1) {
-            chordNotes.splice(bassNoteIndex, 1);
-        }
+        // Remove any duplicate of the bass note from the chord
+        chordNotes = chordNotes.filter(note => note % 12 !== bassNoteValue % 12);
 
         // Add the bass note to the beginning of the chord
         chordNotes.unshift(bassNoteValue);
