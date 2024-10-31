@@ -72,16 +72,16 @@ export function parseChord(chordName) {
         type = '';
     }
 
-    // Special case for 'M7' and 'maj7'
-    if (type === 'maj7' || type === 'm7') {
-        type = type === 'maj7' ? 'M7' : 'm7';
+    // Special case for 'maj7'
+    if (type === 'maj7') {
+        type = 'M7';
     }
 
     const baseNote = notePositions[root];
     const intervals = chordTypes[type];
 
     // Build chordNotes in the order specified by intervals
-    let chordNotes = intervals.map(interval => baseNote + interval);
+    let chordNotes = intervals.map(interval => (baseNote + interval) % 12);
 
     let bassNoteValue = null;
 
@@ -94,21 +94,18 @@ export function parseChord(chordName) {
         bassNoteValue = notePositions[bassNote];
 
         // For slash chords, modify the chord notes
-        const bassNoteInChord = chordNotes.some(note => note % 12 === bassNoteValue % 12);
-        if (!bassNoteInChord) {
+        const bassNoteIndex = chordNotes.indexOf(bassNoteValue);
+        if (bassNoteIndex === -1) {
             chordNotes.unshift(bassNoteValue);
         } else {
             // Reorder the chord to put the bass note first
-            chordNotes = [bassNoteValue, ...chordNotes.filter(note => note % 12 !== bassNoteValue % 12)];
+            chordNotes = [bassNoteValue, ...chordNotes.filter((_, index) => index !== bassNoteIndex)];
         }
-    } else {
-        bassNoteValue = null;
     }
 
     // Ensure all notes are in the correct octave (starting from baseNote)
     chordNotes = chordNotes.map(note => {
         while (note < baseNote) note += 12;
-        while (note >= baseNote + 12) note -= 12;
         return note;
     });
 
@@ -118,6 +115,6 @@ export function parseChord(chordName) {
         type,
         bassNote: bassNote || null,
         chordNotes,
-        bassNoteValue: bassNoteValue
+        bassNoteValue
     };
 }
