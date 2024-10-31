@@ -56,7 +56,7 @@ export function parseChord(chordName) {
     const intervals = chordTypes[type];
 
     // Build chordNotes in the order specified by intervals
-    let chordNotes = intervals.map(interval => ((baseNote + interval) % 12 + 12) % 12);
+    let chordNotes = intervals.map(interval => (baseNote + interval) % 12);
 
     let bassNoteValue = null;
 
@@ -68,21 +68,17 @@ export function parseChord(chordName) {
 
         bassNoteValue = notePositions[bassNote];
 
-        if (chordNotes.includes(bassNoteValue)) {
-            // Reorder chordNotes to have bassNoteValue first
+        if (!chordNotes.includes(bassNoteValue)) {
+            // If the bass note is not in the chord, add it as the first note
+            chordNotes.unshift(bassNoteValue);
+        } else {
+            // If the bass note is in the chord, move it to the front
             chordNotes = [
                 bassNoteValue,
                 ...chordNotes.filter(note => note !== bassNoteValue)
             ];
-        } else {
-            // Bass note is not in chordNotes
-            // Add bassNoteValue at the beginning of the array
-            chordNotes = [bassNoteValue, ...chordNotes];
         }
     }
-
-    // Ensure all notes are within 0 to 11
-    chordNotes = chordNotes.map(note => (note + 12) % 12);
 
     console.log('Parsed chord:', {
         chordName: originalChordName,
@@ -98,6 +94,7 @@ export function parseChord(chordName) {
         root,
         type,
         bassNote: bassNote || null,
-        chordNotes
+        chordNotes,
+        bassNoteValue
     };
 }
