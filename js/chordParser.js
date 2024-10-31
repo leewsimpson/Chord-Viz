@@ -7,6 +7,7 @@ const chordTypes = {
     'aug': [0, 4, 8],
     '7': [0, 4, 7, 10],
     'M7': [0, 4, 7, 11],
+    'maj7': [0, 4, 7, 11],
     'm7': [0, 3, 7, 10],
     'm7b5': [0, 3, 6, 10],
     'ø': [0, 3, 6, 10], // Alternative notation for m7b5
@@ -72,7 +73,7 @@ export function parseChord(chordName) {
     }
 
     // Special case for 'M7' and 'maj7'
-    if (type === 'M7' || type === 'maj7') {
+    if (type === 'maj7') {
         type = 'M7';
     }
 
@@ -81,8 +82,8 @@ export function parseChord(chordName) {
 
     // Build chordNotes in the order specified by intervals
     let chordNotes = intervals.map(interval => {
-        let note = (baseNote + interval) % 12;
-        return note;
+        let note = baseNote + interval;
+        return note >= 12 ? note : note + 12; // Ensure notes are in the next octave if needed
     });
 
     let bassNoteValue = null;
@@ -95,18 +96,9 @@ export function parseChord(chordName) {
 
         bassNoteValue = notePositions[bassNote];
 
-        // For slash chords, we modify the chord notes
-        const bassIndex = chordNotes.indexOf(bassNoteValue);
-        if (bassIndex === -1) {
-            chordNotes.unshift(bassNoteValue);
-        } else {
-            chordNotes = [
-                ...chordNotes.slice(bassIndex),
-                ...chordNotes.slice(0, bassIndex)
-            ];
-        }
+        // For slash chords, we don't modify the chord notes
+        // Instead, we'll return the bass note separately
     }
-
 
     return {
         chordName: originalChordName,
