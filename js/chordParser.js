@@ -73,7 +73,7 @@ export function parseChord(chordName) {
     }
 
     // Special case for 'M7' and 'maj7'
-    if (type === 'maj7' || type === 'M7') {
+    if (type === 'maj7') {
         type = 'M7';
     }
 
@@ -94,18 +94,18 @@ export function parseChord(chordName) {
         bassNoteValue = notePositions[bassNote];
 
         // For slash chords, modify the chord notes
-        if (!chordNotes.includes(bassNoteValue)) {
+        const bassNoteInChord = chordNotes.some(note => note % 12 === bassNoteValue % 12);
+        if (!bassNoteInChord) {
             chordNotes.unshift(bassNoteValue);
         } else {
             // Reorder the chord to put the bass note first
-            chordNotes = [bassNoteValue, ...chordNotes.filter(note => note !== bassNoteValue)];
+            chordNotes = [bassNoteValue, ...chordNotes.filter(note => note % 12 !== bassNoteValue % 12)];
         }
     }
 
-    // Ensure all notes are in the correct octave (between baseNote and baseNote + 11)
+    // Ensure all notes are in the correct octave (starting from baseNote)
     chordNotes = chordNotes.map(note => {
         while (note < baseNote) note += 12;
-        while (note > baseNote + 11) note -= 12;
         return note;
     });
 
@@ -115,6 +115,6 @@ export function parseChord(chordName) {
         type,
         bassNote: bassNote || null,
         chordNotes,
-        bassNoteValue: bassNote ? bassNoteValue : null
+        bassNoteValue
     };
 }
