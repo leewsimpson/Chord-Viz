@@ -3,6 +3,7 @@ import { notePositions } from './constants.js';
 
 const testCases = [
     { input: 'C', expected: { root: 'C', type: '', bassNote: null, chordNotes: [0, 4, 7] } },
+    { input: 'c', expected: { root: 'C', type: '', bassNote: null, chordNotes: [0, 4, 7] } },
     { input: 'Cm', expected: { root: 'C', type: 'm', bassNote: null, chordNotes: [0, 3, 7] } },
     { input: 'C#', expected: { root: 'C#', type: '', bassNote: null, chordNotes: [0, 4, 7] } },
     { input: 'Db', expected: { root: 'Db', type: '', bassNote: null, chordNotes: [0, 4, 7] } },
