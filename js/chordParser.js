@@ -73,7 +73,7 @@ export function parseChord(chordName) {
     }
 
     // Special case for 'M7' and 'maj7'
-    if (type === 'maj7') {
+    if (type === 'maj7' || type === 'M7') {
         type = 'M7';
     }
 
@@ -81,7 +81,7 @@ export function parseChord(chordName) {
     const intervals = chordTypes[type];
 
     // Build chordNotes in the order specified by intervals
-    let chordNotes = intervals.map(interval => (baseNote + interval) % 12);
+    let chordNotes = intervals.map(interval => baseNote + interval);
 
     let bassNoteValue = null;
 
@@ -115,6 +115,6 @@ export function parseChord(chordName) {
         type,
         bassNote: bassNote || null,
         chordNotes,
-        bassNoteValue
+        bassNoteValue: bassNote ? bassNoteValue : null
     };
 }
