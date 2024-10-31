@@ -2,6 +2,7 @@ import { parseChord } from './chordParser.js';
 import { createChordCanvas, drawPiano, highlightKeys } from './pianoDrawing.js';
 
 function createChordVisualization(chordName, lyrics) {
+    console.log(`Creating visualization for chord: ${chordName}`);
     const container = document.createElement('div');
     container.className = 'chord-container';
 
@@ -15,6 +16,7 @@ function createChordVisualization(chordName, lyrics) {
     drawPiano(ctx);
 
     const parsedChord = parseChord(chordName);
+    console.log('Parsed chord:', parsedChord);
     if (parsedChord) {
         console.log(`Highlighting chord: ${chordName}`, parsedChord);
         highlightKeys(ctx, parsedChord);

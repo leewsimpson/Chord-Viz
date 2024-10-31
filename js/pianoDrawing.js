@@ -41,6 +41,7 @@ function getWhiteKeyIndex(note) {
 }
 
 export function highlightKeys(ctx, { chordNotes, bassNote }) {
+    console.log('Highlighting keys:', { chordNotes, bassNote });
     const whiteKeyWidth = 22;
     const whiteKeyHeight = 100;
     const blackKeyWidth = 14;
@@ -60,6 +61,7 @@ export function highlightKeys(ctx, { chordNotes, bassNote }) {
             const whiteKeyIndex = getWhiteKeyIndex(note);
             const octave = Math.floor(note / 12);
             const whiteX = (whiteKeyIndex + octave * 7) * whiteKeyWidth;
+            console.log(`Drawing white key: note=${note}, x=${whiteX}`);
             ctx.beginPath();
             ctx.rect(whiteX, 0, whiteKeyWidth, whiteKeyHeight);
             ctx.fillStyle = chordColor;
@@ -75,6 +77,7 @@ export function highlightKeys(ctx, { chordNotes, bassNote }) {
         const whiteKeyIndex = getWhiteKeyIndex(bassNote);
         const octave = Math.floor(bassNote / 12);
         const whiteX = (whiteKeyIndex + octave * 7) * whiteKeyWidth;
+        console.log(`Drawing white bass key: note=${bassNote}, x=${whiteX}`);
         ctx.beginPath();
         ctx.rect(whiteX, 0, whiteKeyWidth, whiteKeyHeight);
         ctx.fillStyle = bassColor;
@@ -112,12 +115,15 @@ export function highlightKeys(ctx, { chordNotes, bassNote }) {
             // If it's a bass note, use bass color, otherwise if it's a chord note use chord color
             if (isBassNote) {
                 ctx.fillStyle = darkBassColor;
+                console.log(`Drawing black bass key: note=${pos.note}, x=${x}`);
             } else if (isChordNote) {
                 ctx.fillStyle = darkChordColor;
+                console.log(`Drawing black chord key: note=${pos.note}, x=${x}`);
             } else {
                 ctx.fillStyle = '#000';
             }
             ctx.fill();
         });
     }
+    console.log('Finished highlighting keys');
 }
