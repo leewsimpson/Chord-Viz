@@ -31,3 +31,16 @@ export const chordTypes = {
 
 export const whiteKeyIndices = [0, 2, 4, 5, 7, 9, 11];
 export const blackKeyIndices = [1, 3, 6, 8, 10];
+
+export const enharmonicEquivalents = {
+    'C#': 'Db',
+    'Db': 'C#',
+    'D#': 'Eb',
+    'Eb': 'D#',
+    'F#': 'Gb',
+    'Gb': 'F#',
+    'G#': 'Ab',
+    'Ab': 'G#',
+    'A#': 'Bb',
+    'Bb': 'A#'
+};
