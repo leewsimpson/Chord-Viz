@@ -66,9 +66,14 @@ export function parseChord(chordName) {
         return null;
     }
 
-    // If type is not in chordTypes, set to 'major'
+    // If type is not in chordTypes, set to ''
     if (!(type in chordTypes)) {
-        type = 'major';
+        type = '';
+    }
+
+    // Special case for 'M7' and 'maj7'
+    if (type === 'M7' || type === 'maj7') {
+        type = 'M7';
     }
 
     const baseNote = notePositions[root];
@@ -79,9 +84,6 @@ export function parseChord(chordName) {
         let note = (baseNote + interval) % 12;
         return note;
     });
-
-    // Normalize chordNotes to be relative to the root note
-    chordNotes = chordNotes.map(note => (note - baseNote + 12) % 12);
 
     let bassNoteValue = null;
 
