@@ -15,7 +15,7 @@ export function drawPiano(ctx) {
     
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-    // Draw white keys only
+    // Draw white keys
     for (let i = 0; i < 14; i++) {
         ctx.beginPath();
         ctx.rect(i * whiteKeyWidth, 0, whiteKeyWidth, whiteKeyHeight);
@@ -23,6 +23,18 @@ export function drawPiano(ctx) {
         ctx.stroke();
         ctx.fillStyle = '#fff';
         ctx.fill();
+    }
+
+    // Draw black keys
+    const blackKeyPositions = [1, 2, 4, 5, 6];
+    for (let i = 0; i < 2; i++) {
+        for (let j = 0; j < blackKeyPositions.length; j++) {
+            const x = (blackKeyPositions[j] + i * 7) * whiteKeyWidth - blackKeyWidth / 2;
+            ctx.beginPath();
+            ctx.rect(x, 0, blackKeyWidth, blackKeyHeight);
+            ctx.fillStyle = '#000';
+            ctx.fill();
+        }
     }
 }
 
