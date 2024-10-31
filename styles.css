@@ -1,0 +1,252 @@
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #f5f7fa;
+    margin: 0;
+    min-width: 320px;
+    color: #2d3748;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin: 32px 0;
+    position: relative;
+}
+
+.help-container {
+    position: relative;
+}
+
+.help-icon {
+    cursor: pointer;
+    color: #4A90E2;
+    font-size: 24px;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background-color 0.2s ease;
+}
+
+.help-icon:hover {
+    background-color: rgba(74, 144, 226, 0.1);
+}
+
+.help-popup {
+    display: none;
+    position: absolute;
+    top: calc(100% + 10px);
+    right: -10px;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    width: 300px;
+    z-index: 1000;
+}
+
+.help-popup.show {
+    display: block;
+}
+
+.popup-content {
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.popup-content p {
+    margin: 12px 0;
+    color: #4a5568;
+}
+
+.input-container {
+    margin: 20px 0;
+    width: 90%;
+    max-width: 1200px;
+}
+
+textarea {
+    width: 100%;
+    height: 200px;
+    padding: 16px;
+    font-size: 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-family: monospace;
+    line-height: 1.6;
+    resize: vertical;
+    transition: border-color 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+textarea:focus {
+    outline: none;
+    border-color: #4A90E2;
+    box-shadow: 0 0 0 3px rgba(74,144,226,0.2);
+}
+
+.chord-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+    width: 90%;
+    max-width: 1200px;
+    padding: 20px;
+    justify-items: center;
+}
+
+.chord-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: white;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.1);
+    min-height: 200px;
+    width: 100%;
+    max-width: 300px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.chord-container:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.12);
+}
+
+.chord-name {
+    font-weight: 600;
+    margin-bottom: 16px;
+    font-size: 20px;
+    color: #2d3748;
+}
+
+.lyrics {
+    margin-top: 16px;
+    text-align: center;
+    font-style: italic;
+    padding: 12px;
+    color: #4a5568;
+    font-size: 15px;
+    width: 100%;
+    word-wrap: break-word;
+    line-height: 1.4;
+}
+
+canvas {
+    border: 1px solid #e2e8f0;
+    background-color: white;
+    border-radius: 8px;
+    margin: 12px 0;
+    width: 280px;
+    height: 120px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+h1 {
+    margin: 0;
+    color: #2d3748;
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 12px;
+    }
+
+    .chord-grid {
+        gap: 16px;
+        padding: 12px;
+    }
+
+    .chord-container {
+        padding: 20px;
+    }
+
+    canvas {
+        width: 100%;
+        height: auto;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    .help-popup {
+        width: 250px;
+        right: -50px;
+    }
+}
+
+@media print {
+    @page {
+        size: A4;
+        margin: 10mm;
+    }
+
+    /* Hide non-essential elements */
+    .header,
+    .input-container,
+    .help-container {
+        display: none !important;
+    }
+
+    /* Reset body styles for printing */
+    body {
+        padding: 0;
+        margin: 0;
+        background: none;
+        transform: scale(0.8); /* Adjust scale if necessary */
+        transform-origin: top left;
+    }
+
+    /* Adjust chord grid for full-width printing */
+    .chord-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr); /* Ensure four columns per row */
+        gap: 20px; /* Space between chords */
+        width: 100%;
+        max-width: 100%;
+        padding-right: 5mm; /* Add slight right padding if cut-off persists */
+        box-sizing: border-box; /* Ensures padding doesn’t affect width */
+    }
+
+    /* Style chord containers for printing */
+    .chord-container {
+        width: 100%; /* Ensure full width within each grid cell */
+        box-shadow: none;
+        border: none;
+        padding: 10px; /* Adjust padding if needed */
+        background: none;
+        margin: 0; /* Remove bottom margin */
+    }
+
+    /* Remove hover effects */
+    .chord-container:hover {
+        transform: none;
+        box-shadow: none;
+    }
+
+    /* Adjust canvas for printing */
+    canvas {
+        box-shadow: none;
+        border: 1px solid #000;
+        margin: 5px auto;
+    }
+
+    /* Ensure text is readable in print */
+    .chord-name {
+        color: #000;
+        text-align: center;
+    }
+
+    .lyrics {
+        color: #000;
+        text-align: center;
+    }
+}
