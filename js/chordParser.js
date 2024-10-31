@@ -78,13 +78,17 @@ export function parseChord(chordName) {
     const baseNote = notePositions[root];
     const intervals = chordTypes[type];
 
-    let chordNotes = intervals.map((interval, index) => {
+    let chordNotes = [];
+    let previousNote = baseNote - 1;  // Initialize with a value lower than baseNote
+
+    for (let interval of intervals) {
         let note = baseNote + interval;
-        while (note <= baseNote || (index > 0 && note <= chordNotes[index - 1])) {
+        while (note <= previousNote) {
             note += 12;
         }
-        return note;
-    });
+        chordNotes.push(note);
+        previousNote = note;
+    }
 
     let bassNoteValue = null;
 
