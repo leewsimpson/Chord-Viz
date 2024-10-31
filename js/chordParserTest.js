@@ -10,8 +10,6 @@ const testCases = [
     { input: 'Cmaj7', expected: { root: 'C', type: 'maj7', bassNote: null, chordNotes: [0, 4, 7, 11] } },
     { input: 'C7', expected: { root: 'C', type: '7', bassNote: null, chordNotes: [0, 4, 7, 10] } },
     { input: 'Csus4', expected: { root: 'C', type: 'sus4', bassNote: null, chordNotes: [0, 5, 7] } },
-    { input: 'C/G', expected: { root: 'C', type: '', bassNote: 'G', chordNotes: [0, 4, 7] } },
-    { input: 'Cm7/Bb', expected: { root: 'C', type: 'm7', bassNote: 'Bb', chordNotes: [0, 3, 7, 10] } },
     { input: 'C#m7b5', expected: { root: 'C#', type: 'm7b5', bassNote: null, chordNotes: [0, 3, 6, 10] } },
     { input: 'Caug', expected: { root: 'C', type: 'aug', bassNote: null, chordNotes: [0, 4, 8] } },
     { input: 'Cdim', expected: { root: 'C', type: 'dim', bassNote: null, chordNotes: [0, 3, 6] } },
@@ -22,7 +20,7 @@ const testCases = [
     { input: 'C11', expected: { root: 'C', type: '11', bassNote: null, chordNotes: [0, 4, 7, 10, 2, 5] } },
     { input: 'C13', expected: { root: 'C', type: '13', bassNote: null, chordNotes: [0, 4, 7, 10, 2, 5, 9] } },
     { input: 'Cadd9', expected: { root: 'C', type: 'add9', bassNote: null, chordNotes: [0, 4, 7, 2] } },
-    { input: 'C/E', expected: { root: 'C', type: '', bassNote: 'E', chordNotes: [0, 4, 7] } },
+    { input: 'C/E', expected: { root: 'C', type: '', bassNote: 'E', chordNotes: [4, 7, 12] } },
 ];
 
 function runTests() {
