@@ -36,16 +36,10 @@ export function parseChord(chordName) {
     let bassNoteValue = null;
     if (bassNote) {
         bassNoteValue = notePositions[bassNote] + 48; // Add bass note an octave lower
-        const bassNoteIndex = chordNotes.findIndex(note => note % 12 === bassNoteValue % 12);
-        if (bassNoteIndex !== -1) {
-            // If bass note is in the chord, move it to the front
-            const bassNoteOctave = Math.floor(chordNotes[bassNoteIndex] / 12);
-            chordNotes.splice(bassNoteIndex, 1);
-            chordNotes.unshift(bassNoteValue + (bassNoteOctave - 4) * 12);
-        } else {
-            // If bass note is not in the chord, add it to the front
-            chordNotes.unshift(bassNoteValue);
-        }
+        // Remove any existing instances of the bass note
+        chordNotes = chordNotes.filter(note => note % 12 !== bassNoteValue % 12);
+        // Add the bass note to the front
+        chordNotes.unshift(bassNoteValue);
     }
 
     // Debug output
