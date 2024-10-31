@@ -25,6 +25,11 @@ export function parseChord(chordName) {
     let bassNoteValue = null;
     if (bassNote) {
         bassNoteValue = notePositions[bassNote];
+        if (bassNoteValue === undefined) {
+            // Handle flat bass notes
+            bassNote = bassNote.replace('b', '');
+            bassNoteValue = (notePositions[bassNote] - 1 + 12) % 12;
+        }
         if (!chordNotes.includes(bassNoteValue)) {
             chordNotes.push(bassNoteValue);
         }
