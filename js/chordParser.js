@@ -35,10 +35,8 @@ export function parseChord(chordName) {
         root,
         type,
         bassNote,
-        result: { 
-            chordNotes, 
-            bassNote: bassNoteValue,
-        }
+        chordNotes,
+        bassNote: bassNoteValue
     });
 
     return {
