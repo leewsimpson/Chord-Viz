@@ -22,26 +22,25 @@ export function parseChord(chordName) {
     const intervals = chordTypes[type] || chordTypes[''];
     let chordNotes = intervals.map(interval => rootValue + interval);
 
-    let bassNoteValue = null;
-    if (bassNote) {
-        bassNoteValue = notePositions[bassNote];
-        if (chordNotes.includes(bassNoteValue % 12)) {
-            // Reorder chord if bass note is in the chord
-            chordNotes = chordNotes.filter(note => note !== bassNoteValue % 12);
-            chordNotes.unshift(bassNoteValue % 12);
-        } else {
-            // Add bass note if it's not in the chord
-            chordNotes.unshift(bassNoteValue % 12);
-        }
-    }
-
     // Adjust notes to span multiple octaves if necessary
     let baseOctave = Math.floor(rootValue / 12);
     chordNotes = chordNotes.map(note => {
-        while (note < baseOctave * 12) note += 12;
-        while (note >= (baseOctave + 1) * 12) note -= 12;
+        while (note < rootValue) note += 12;
+        while (note >= rootValue + 12) note -= 12;
         return note;
     });
+
+    let bassNoteValue = null;
+    if (bassNote) {
+        bassNoteValue = notePositions[bassNote];
+        if (!chordNotes.includes(bassNoteValue)) {
+            // Add bass note if it's not in the chord
+            chordNotes.unshift(bassNoteValue);
+        }
+    }
+
+    // Sort the chord notes
+    chordNotes.sort((a, b) => a - b);
 
     return {
         chordName,
