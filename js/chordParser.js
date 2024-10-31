@@ -18,50 +18,80 @@ import { chordTypes, notePositions } from './constants.js';
  * - Recognizes both sharp (#) and flat (b) notations
  * - Supports slash chords (e.g., C/E)
  *   - Reorders the chord if the bass note is in the chord
- *   - shows a lower octave bass note if the bass note is not in the chord
+ *   - Shows a lower octave bass note if the bass note is not in the chord
  * - Returns null for invalid chord names
  * - Chord notes are represented as MIDI note numbers (0-11, where 0 is C)
  */
 export function parseChord(chordName) {
     const originalChordName = chordName;
-    chordName = chordName.toUpperCase();
-    
-    const match = chordName.match(/^([A-G][#B]?)([^/]*)(?:\/([A-G][#B]?))?$/);
+    chordName = chordName.trim();
+
+    // Use regex to parse the chord name
+    const regex = /^([A-Ga-g](?:#|b)?)(.*?)(?:\/([A-Ga-g](?:#|b)?))?$/;
+    const match = chordName.match(regex);
     if (!match) return null;
 
     let [_, root, type, bassNote] = match;
-    root = root.replace('B', 'b');
-    if (bassNote) bassNote = bassNote.replace('B', 'b');
-    if (!(root in notePositions)) return null;
 
-    console.log('Parsed chord components:', { root, type, bassNote });
+    // Normalize root and bassNote
+    root = root.charAt(0).toUpperCase() + root.slice(1);
+    if (bassNote) {
+        bassNote = bassNote.charAt(0).toUpperCase() + bassNote.slice(1);
+    }
 
+    // Lowercase type
     type = type.toLowerCase();
+
+    // Check if root is valid
+    if (!(root in notePositions)) {
+        return null;
+    }
+
+    // If type is not in chordTypes, set to ''
     if (!(type in chordTypes)) {
         type = '';
     }
 
     const baseNote = notePositions[root];
-    let chordNotes = chordTypes[type].map(interval => (baseNote + interval) % 12);
+    const intervals = chordTypes[type];
+
+    // Build chordNotes in the order specified by intervals
+    let chordNotes = intervals.map(interval => (baseNote + interval) % 12);
 
     let bassNoteValue = null;
+
     if (bassNote) {
-        bassNoteValue = notePositions[bassNote];
-        if (bassNoteValue === undefined) {
-            // Handle flat bass notes
-            bassNote = bassNote.replace('b', '');
-            bassNoteValue = (notePositions[bassNote] - 1 + 12) % 12;
+        // Check if bassNote is valid
+        if (!(bassNote in notePositions)) {
+            return null;
         }
-        
-        // Always add the bass note as the first note
-        chordNotes = [
-            bassNoteValue,
-            ...chordNotes.filter(note => note !== bassNoteValue)
-        ];
+
+        bassNoteValue = notePositions[bassNote];
+
+        if (chordNotes.includes(bassNoteValue)) {
+            // Reorder chordNotes to have bassNoteValue first
+            chordNotes = [
+                bassNoteValue,
+                ...chordNotes.filter(note => note !== bassNoteValue)
+            ];
+        } else {
+            // Bass note is not in chordNotes
+            // Add bassNoteValue at lower octave (negative value)
+            chordNotes = [
+                bassNoteValue - 12,
+                ...chordNotes
+            ];
+        }
     }
 
-    // Ensure all notes are in the range 0-11
-    chordNotes = chordNotes.map(note => note % 12);
+    // Ensure all notes are within -11 to 11
+    chordNotes = chordNotes.map(note => {
+        if (note < 0) {
+            return ((note + 12) % 12) - 12;
+        } else {
+            return note % 12;
+        }
+    });
 
     console.log('Parsed chord:', {
         chordName: originalChordName,
@@ -81,4 +111,3 @@ export function parseChord(chordName) {
         bassNoteValue
     };
 }
-
