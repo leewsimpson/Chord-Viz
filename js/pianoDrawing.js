@@ -65,6 +65,7 @@ export function highlightKeys(ctx, { chordNotes, bassNote }) {
     const darkChordColor = '#2C5282'; // Dark blue for black chord notes
     const darkBassColor = '#A04000';  // Dark orange for black bass notes
 
+    // Highlight white keys first
     chordNotes.forEach(note => {
         const noteValue = ((note % 12) + 12) % 12;  // Ensure positive value
         const octave = Math.floor(note / 12);
@@ -79,7 +80,27 @@ export function highlightKeys(ctx, { chordNotes, bassNote }) {
             ctx.strokeStyle = '#000';
             ctx.lineWidth = 2;
             ctx.stroke();
-        } else {
+        }
+    });
+
+    // Draw black keys
+    const blackKeyPositions = [1, 2, 4, 5, 6];
+    for (let i = 0; i < 2; i++) {
+        for (let j = 0; j < blackKeyPositions.length; j++) {
+            const x = (blackKeyPositions[j] + i * 7) * whiteKeyWidth - blackKeyWidth / 2;
+            ctx.beginPath();
+            ctx.rect(x, 0, blackKeyWidth, blackKeyHeight);
+            ctx.fillStyle = '#000';
+            ctx.fill();
+        }
+    }
+
+    // Highlight black keys last
+    chordNotes.forEach(note => {
+        const noteValue = ((note % 12) + 12) % 12;  // Ensure positive value
+        const octave = Math.floor(note / 12);
+
+        if (!whiteKeyIndices.includes(noteValue)) {
             const blackKeyIndex = blackKeyIndices.indexOf(noteValue);
             const x = ((blackKeyIndex < 2 ? blackKeyIndex + 1 : blackKeyIndex + 2) + octave * 7) * whiteKeyWidth - blackKeyWidth/2;
             ctx.beginPath();
