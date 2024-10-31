@@ -54,7 +54,14 @@ export function parseChord(chordName) {
     const intervals = chordTypes[type];
 
     // Build chordNotes in the order specified by intervals
-    let chordNotes = intervals.map(interval => (baseNote + interval) % 12);
+    let chordNotes = intervals.map(interval => {
+        let note = (baseNote + interval) % 12;
+        // Adjust for C# and Db
+        if (root === 'C#' || root === 'Db') {
+            note = (note + 1) % 12;
+        }
+        return note;
+    });
 
     let bassNoteValue = null;
 
