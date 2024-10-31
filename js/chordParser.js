@@ -20,7 +20,7 @@ export function parseChord(chordName) {
 
     const rootValue = notePositions[root];
     const intervals = chordTypes[type] || chordTypes[''];
-    let chordNotes = intervals.map(interval => (rootValue + interval) % 12);
+    let chordNotes = intervals.map(interval => rootValue + interval);
 
     let bassNoteValue = null;
     if (bassNote) {
@@ -36,11 +36,12 @@ export function parseChord(chordName) {
     }
 
     // Adjust notes to span multiple octaves if necessary
-    for (let i = 1; i < chordNotes.length; i++) {
-        while (chordNotes[i] <= chordNotes[i-1]) {
-            chordNotes[i] += 12;
-        }
-    }
+    let baseOctave = Math.floor(rootValue / 12);
+    chordNotes = chordNotes.map(note => {
+        while (note < baseOctave * 12) note += 12;
+        while (note >= (baseOctave + 1) * 12) note -= 12;
+        return note;
+    });
 
     return {
         chordName,
@@ -59,8 +60,10 @@ function normalizeNote(note) {
 function normalizeType(type) {
     type = type.toLowerCase();
     if (type === 'maj7' || type === 'm7') return type;
-    if (type === '7' || type === 'dim' || type === 'aug' || type === 'sus4' || type === 'sus2') return type;
+    if (type === 'm7' || type === '7' || type === 'dim' || type === 'aug' || type === 'sus4' || type === 'sus2') return type;
     if (type === '9' || type === '11' || type === '13' || type === 'add9') return type;
     if (type === 'm') return type;
+    if (type === 'maj7' || type === 'M7') return 'maj7';
+    if (type === '6') return type;
     return '';
 }
