@@ -1,13 +1,15 @@
 import { chordTypes, notePositions } from './constants.js';
 
 export function parseChord(chordName) {
-    // Convert the chord name to uppercase
+    const originalChordName = chordName;
     chordName = chordName.toUpperCase();
     
-    const match = chordName.match(/^([A-G][#b]?)([^/]*)(?:\/([A-G][#b]?))?$/);
+    const match = chordName.match(/^([A-G][#B]?)([^/]*)(?:\/([A-G][#B]?))?$/);
     if (!match) return null;
 
     let [_, root, type, bassNote] = match;
+    root = root.replace('B', 'b');
+    if (bassNote) bassNote = bassNote.replace('B', 'b');
     if (!(root in notePositions)) return null;
 
     console.log('Parsed chord components:', { root, type, bassNote });
@@ -29,7 +31,7 @@ export function parseChord(chordName) {
     }
 
     console.log('Parsed chord:', {
-        chordName,
+        chordName: originalChordName,
         root,
         type,
         bassNote,
@@ -40,8 +42,14 @@ export function parseChord(chordName) {
     });
 
     return {
-        chordNotes,
-        bassNote: bassNoteValue
+        chordName: originalChordName,
+        root,
+        type,
+        bassNote,
+        result: {
+            chordNotes,
+            bassNote: bassNoteValue
+        }
     };
 }
 
