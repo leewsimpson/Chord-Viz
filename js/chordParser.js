@@ -68,14 +68,17 @@ export function parseChord(chordName) {
         type = '';
     }
 
-    if (type === 'maj7') {
-        type = 'M7';
-    }
-
     const baseNote = notePositions[root];
     const intervals = chordTypes[type];
 
     let chordNotes = intervals.map(interval => (baseNote + interval));
+
+    // Adjust octaves for notes that wrap around
+    for (let i = 1; i < chordNotes.length; i++) {
+        while (chordNotes[i] < chordNotes[i-1]) {
+            chordNotes[i] += 12;
+        }
+    }
 
     let bassNoteValue = null;
 
@@ -86,16 +89,21 @@ export function parseChord(chordName) {
 
         bassNoteValue = notePositions[bassNote];
 
-        const bassNoteIndex = chordNotes.findIndex(note => note % 12 === bassNoteValue);
-        if (bassNoteIndex === -1) {
-            chordNotes.unshift(bassNoteValue);
-        } else {
-            const bassNoteOctave = Math.floor(chordNotes[bassNoteIndex] / 12);
-            chordNotes = [
-                bassNoteValue + bassNoteOctave * 12,
-                ...chordNotes.filter((_, index) => index !== bassNoteIndex)
-            ];
+        // Find the octave for the bass note
+        let bassNoteOctave = 0;
+        while (bassNoteValue + bassNoteOctave * 12 < chordNotes[0]) {
+            bassNoteOctave++;
         }
+        bassNoteValue += bassNoteOctave * 12;
+
+        // If the bass note is already in the chord, remove it from its current position
+        const bassNoteIndex = chordNotes.indexOf(bassNoteValue);
+        if (bassNoteIndex !== -1) {
+            chordNotes.splice(bassNoteIndex, 1);
+        }
+
+        // Add the bass note to the beginning of the chord
+        chordNotes.unshift(bassNoteValue);
     }
 
     return {
