@@ -42,6 +42,7 @@ function getWhiteKeyIndex(note) {
 
 export function highlightKeys(ctx, { chordNotes, bassNote }) {
     console.log('Highlighting keys:', { chordNotes, bassNote });
+    drawPiano(ctx);  // Draw the piano background first
     const whiteKeyWidth = 22;
     const whiteKeyHeight = 100;
     const blackKeyWidth = 14;
@@ -55,12 +56,11 @@ export function highlightKeys(ctx, { chordNotes, bassNote }) {
 
     // First draw all white keys
     chordNotes.forEach(note => {
-        const noteValue = note % 12;
+        const noteValue = ((note % 12) + 12) % 12;  // Ensure positive value
         if (whiteKeyIndices.includes(noteValue)) {
             const whiteKeyIndex = getWhiteKeyIndex(noteValue);
-            const octave = Math.floor(note / 12); // Simplified octave calculation
+            const octave = Math.floor(note / 12);
             const whiteX = (whiteKeyIndex + octave * 7) * whiteKeyWidth;
-            console.log(`Drawing white key: note=${note}, noteValue=${noteValue}, x=${whiteX}`);
             ctx.beginPath();
             ctx.rect(whiteX, 0, whiteKeyWidth, whiteKeyHeight);
             ctx.fillStyle = note === bassNote ? bassColor : chordColor;
@@ -90,12 +90,10 @@ export function highlightKeys(ctx, { chordNotes, bassNote }) {
 
             if (matchingNote !== undefined) {
                 ctx.fillStyle = matchingNote === bassNote ? darkBassColor : darkChordColor;
-                console.log(`Drawing black ${matchingNote === bassNote ? 'bass' : 'chord'} key: note=${pos.note}, x=${x}`);
             } else {
                 ctx.fillStyle = '#000';
             }
             ctx.fill();
         });
     }
-    console.log('Finished highlighting keys');
 }
