@@ -58,10 +58,10 @@ export function highlightKeys(ctx, { chordNotes, bassNote }) {
     chordNotes.forEach(note => {
         const noteValue = note % 12;
         if (whiteKeyIndices.includes(noteValue)) {
-            const whiteKeyIndex = getWhiteKeyIndex(note);
-            const octave = Math.floor(note / 12) - 4; // Adjust for middle C (C4) being 48
+            const whiteKeyIndex = getWhiteKeyIndex(noteValue);
+            const octave = Math.floor((note - 48) / 12); // Adjust for middle C (C4) being 48
             const whiteX = (whiteKeyIndex + octave * 7) * whiteKeyWidth;
-            console.log(`Drawing white key: note=${note}, x=${whiteX}`);
+            console.log(`Drawing white key: note=${note}, noteValue=${noteValue}, x=${whiteX}`);
             ctx.beginPath();
             ctx.rect(whiteX, 0, whiteKeyWidth, whiteKeyHeight);
             ctx.fillStyle = chordColor;
@@ -77,8 +77,8 @@ export function highlightKeys(ctx, { chordNotes, bassNote }) {
 
     // 2. Draw white bass note
     if (bassNote !== null && whiteKeyIndices.includes(bassNote % 12)) {
-        const whiteKeyIndex = getWhiteKeyIndex(bassNote);
-        const octave = Math.floor(bassNote / 12) - 4; // Adjust for middle C (C4) being 48
+        const whiteKeyIndex = getWhiteKeyIndex(bassNote % 12);
+        const octave = Math.floor((bassNote - 48) / 12); // Adjust for middle C (C4) being 48
         const whiteX = (whiteKeyIndex + octave * 7) * whiteKeyWidth;
         console.log(`Drawing white bass key: note=${bassNote}, x=${whiteX}`);
         ctx.beginPath();
@@ -107,13 +107,13 @@ export function highlightKeys(ctx, { chordNotes, bassNote }) {
             
             const isChordNote = chordNotes.some(note => {
                 const noteValue = note % 12;
-                const noteOctave = Math.floor(note / 12) - 4; // Adjust for middle C (C4) being 48
+                const noteOctave = Math.floor((note - 48) / 12); // Adjust for middle C (C4) being 48
                 return noteValue === pos.note && noteOctave === octave;
             });
 
             const isBassNote = bassNote !== null && 
                 (bassNote % 12 === pos.note) && 
-                (Math.floor(bassNote / 12) - 4 === octave); // Adjust for middle C (C4) being 48
+                (Math.floor((bassNote - 48) / 12) === octave); // Adjust for middle C (C4) being 48
             
             // If it's a bass note, use bass color, otherwise if it's a chord note use chord color
             if (isBassNote) {
