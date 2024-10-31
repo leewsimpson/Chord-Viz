@@ -1,5 +1,4 @@
 import { parseChord } from './chordParser.js';
-import { notePositions } from './constants.js';
 
 const testCases = [
     { input: 'InvalidChord', expected: null },

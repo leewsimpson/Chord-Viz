@@ -1,4 +1,25 @@
-import { chordTypes, notePositions } from './constants.js';
+import { notePositions } from './constants.js';
+
+const chordTypes = {
+    '': [0, 4, 7],
+    'm': [0, 3, 7],
+    'dim': [0, 3, 6],
+    'aug': [0, 4, 8],
+    '7': [0, 4, 7, 10],
+    'M7': [0, 4, 7, 11],
+    'maj7': [0, 4, 7, 11],
+    'm7': [0, 3, 7, 10],
+    'm7b5': [0, 3, 6, 10],
+    'sus4': [0, 5, 7],
+    'sus2': [0, 2, 7],
+    '6': [0, 4, 7, 9],
+    'm6': [0, 3, 7, 9],
+    '9': [0, 4, 7, 10, 14],
+    'm9': [0, 3, 7, 10, 14],
+    '11': [0, 4, 7, 10, 14, 17],
+    '13': [0, 4, 7, 10, 14, 17, 21],
+    'add9': [0, 4, 7, 14]
+};
 
 /**
  * Parses a chord name and returns its components and notes.
@@ -45,9 +66,9 @@ export function parseChord(chordName) {
         return null;
     }
 
-    // If type is not in chordTypes, set to ''
+    // If type is not in chordTypes, set to 'major'
     if (!(type in chordTypes)) {
-        type = '';
+        type = 'major';
     }
 
     const baseNote = notePositions[root];
@@ -73,12 +94,13 @@ export function parseChord(chordName) {
         bassNoteValue = notePositions[bassNote];
 
         // For slash chords, we modify the chord notes
-        if (!chordNotes.includes(bassNoteValue)) {
+        const bassIndex = chordNotes.indexOf(bassNoteValue);
+        if (bassIndex === -1) {
             chordNotes.unshift(bassNoteValue);
         } else {
             chordNotes = [
-                bassNoteValue,
-                ...chordNotes.filter(note => note !== bassNoteValue)
+                ...chordNotes.slice(bassIndex),
+                ...chordNotes.slice(0, bassIndex)
             ];
         }
     }
