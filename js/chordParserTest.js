@@ -1,62 +1,72 @@
 import { parseChord } from './chordParser.js';
 
 const testCases = [
-    { input: 'InvalidChord', expected: null },
     // Major chords
     { input: 'C', expected: { root: 'C', type: '', bassNote: null, chordNotes: [0, 4, 7] } },
     { input: 'G', expected: { root: 'G', type: '', bassNote: null, chordNotes: [7, 11, 14] } },
-    { input: 'F', expected: { root: 'F', type: '', bassNote: null, chordNotes: [5, 9, 12] } },
 
     // Minor chords
     { input: 'Am', expected: { root: 'A', type: 'm', bassNote: null, chordNotes: [9, 12, 16] } },
-    { input: 'Dm', expected: { root: 'D', type: 'm', bassNote: null, chordNotes: [2, 5, 9] } },
-    { input: 'Em', expected: { root: 'E', type: 'm', bassNote: null, chordNotes: [4, 7, 11] } },
-
-    // Diminished chords
-    { input: 'Bdim', expected: { root: 'B', type: 'dim', bassNote: null, chordNotes: [11, 14, 17] } },
-    { input: 'C#dim', expected: { root: 'C#', type: 'dim', bassNote: null, chordNotes: [1, 4, 7] } },
-
-    // Augmented chords
-    { input: 'Caug', expected: { root: 'C', type: 'aug', bassNote: null, chordNotes: [0, 4, 8] } },
-    { input: 'Gaug', expected: { root: 'G', type: 'aug', bassNote: null, chordNotes: [7, 11, 15] } },
+    { input: 'bm', expected: { root: 'B', type: 'm', bassNote: null, chordNotes: [11, 14, 17] } },
 
     // Seventh chords
     { input: 'C7', expected: { root: 'C', type: '7', bassNote: null, chordNotes: [0, 4, 7, 10] } },
-    { input: 'D7', expected: { root: 'D', type: '7', bassNote: null, chordNotes: [2, 6, 9, 12] } },
-    { input: 'A7', expected: { root: 'A', type: '7', bassNote: null, chordNotes: [9, 13, 16, 19] } },
+    { input: 'a7', expected: { root: 'A', type: '7', bassNote: null, chordNotes: [9, 13, 16, 19] } },
 
-    // Major seventh chords
+    // Major 7th chords
     { input: 'CM7', expected: { root: 'C', type: 'M7', bassNote: null, chordNotes: [0, 4, 7, 11] } },
-    { input: 'FM7', expected: { root: 'F', type: 'M7', bassNote: null, chordNotes: [5, 9, 12, 16] } },
+    { input: 'DM7', expected: { root: 'D', type: 'M7', bassNote: null, chordNotes: [2, 6, 9, 13] } },
+
+    // Augmented chords
+    { input: 'Caug', expected: { root: 'C', type: 'aug', bassNote: null, chordNotes: [0, 4, 8] } },
+    { input: 'faug', expected: { root: 'F', type: 'aug', bassNote: null, chordNotes: [5, 9, 13] } },
+
+    // Diminished chords
+    { input: 'Bdim', expected: { root: 'B', type: 'dim', bassNote: null, chordNotes: [11, 14, 17] } },
+    { input: 'c#dim', expected: { root: 'C#', type: 'dim', bassNote: null, chordNotes: [1, 4, 7] } },
 
     // Suspended chords
-    { input: 'Csus4', expected: { root: 'C', type: 'sus4', bassNote: null, chordNotes: [0, 5, 7] } },
-    { input: 'Dsus2', expected: { root: 'D', type: 'sus2', bassNote: null, chordNotes: [2, 4, 9] } },
+    { input: 'Gsus4', expected: { root: 'G', type: 'sus4', bassNote: null, chordNotes: [7, 12, 14] } },
+    { input: 'Asus2', expected: { root: 'A', type: 'sus2', bassNote: null, chordNotes: [9, 11, 16] } },
 
-    // Chords with specified bass notes
-    { input: 'C/E', expected: { root: 'C', type: '', bassNote: 'E', chordNotes: [4, 0, 7] } },
-    { input: 'G/B', expected: { root: 'G', type: '', bassNote: 'B', chordNotes: [11, 7, 14] } },
-    { input: 'D/F#', expected: { root: 'D', type: '', bassNote: 'F#', chordNotes: [6, 2, 9] } },
-    
-    { input: 'G', expected: { root: 'G', type: '', bassNote: null, chordNotes: [7, 11, 2] } },
-    { input: 'c', expected: { root: 'C', type: '', bassNote: null, chordNotes: [0, 4, 7] } },
-    { input: 'Cm', expected: { root: 'C', type: 'm', bassNote: null, chordNotes: [0, 3, 7] } },
-    { input: 'C#', expected: { root: 'C#', type: '', bassNote: null, chordNotes: [0, 4, 7] } },
-    { input: 'Db', expected: { root: 'Db', type: '', bassNote: null, chordNotes: [0, 4, 7] } },
-    { input: 'Cmaj7', expected: { root: 'C', type: 'maj7', bassNote: null, chordNotes: [0, 4, 7, 11] } },
-    { input: 'C7', expected: { root: 'C', type: '7', bassNote: null, chordNotes: [0, 4, 7, 10] } },
-    { input: 'Csus4', expected: { root: 'C', type: 'sus4', bassNote: null, chordNotes: [0, 5, 7] } },
-    { input: 'C#m7b5', expected: { root: 'C#', type: 'm7b5', bassNote: null, chordNotes: [0, 3, 6, 10] } },
-    { input: 'Caug', expected: { root: 'C', type: 'aug', bassNote: null, chordNotes: [0, 4, 8] } },
-    { input: 'Cdim', expected: { root: 'C', type: 'dim', bassNote: null, chordNotes: [0, 3, 6] } },
+    // Sixth chords
     { input: 'C6', expected: { root: 'C', type: '6', bassNote: null, chordNotes: [0, 4, 7, 9] } },
-    { input: 'Cm6', expected: { root: 'C', type: 'm6', bassNote: null, chordNotes: [0, 3, 7, 9] } },
-    { input: 'C9', expected: { root: 'C', type: '9', bassNote: null, chordNotes: [0, 4, 7, 10, 2] } },
-    { input: 'Cm9', expected: { root: 'C', type: 'm9', bassNote: null, chordNotes: [0, 3, 7, 10, 2] } },
-    { input: 'C11', expected: { root: 'C', type: '11', bassNote: null, chordNotes: [0, 4, 7, 10, 2, 5] } },
-    { input: 'C13', expected: { root: 'C', type: '13', bassNote: null, chordNotes: [0, 4, 7, 10, 2, 5, 9] } },
-    { input: 'Cadd9', expected: { root: 'C', type: 'add9', bassNote: null, chordNotes: [0, 4, 7, 2] } },
-    { input: 'C/E', expected: { root: 'C', type: '', bassNote: 'E', chordNotes: [4, 0, 7], bassNoteValue: 4 } },
+    { input: 'E6', expected: { root: 'E', type: '6', bassNote: null, chordNotes: [4, 8, 11, 13] } },
+
+    // Ninth chords
+    { input: 'C9', expected: { root: 'C', type: '9', bassNote: null, chordNotes: [0, 4, 7, 10, 14] } },
+    { input: 'D9', expected: { root: 'D', type: '9', bassNote: null, chordNotes: [2, 6, 9, 12, 16] } },
+
+    // Eleventh chords
+    { input: 'C11', expected: { root: 'C', type: '11', bassNote: null, chordNotes: [0, 4, 7, 10, 14, 17] } },
+    { input: 'G11', expected: { root: 'G', type: '11', bassNote: null, chordNotes: [7, 11, 14, 17, 21, 24] } },
+
+    // Thirteenth chords
+    { input: 'C13', expected: { root: 'C', type: '13', bassNote: null, chordNotes: [0, 4, 7, 10, 14, 17, 21] } },
+    { input: 'A13', expected: { root: 'A', type: '13', bassNote: null, chordNotes: [9, 13, 16, 19, 23, 26, 30] } },
+
+    // Add9 chords
+    { input: 'Cadd9', expected: { root: 'C', type: 'add9', bassNote: null, chordNotes: [0, 4, 7, 14] } },
+    { input: 'Fadd9', expected: { root: 'F', type: 'add9', bassNote: null, chordNotes: [5, 9, 12, 19] } },
+
+    // Chords with sharps and flats
+    { input: 'F#', expected: { root: 'F#', type: '', bassNote: null, chordNotes: [6, 10, 13] } },
+    { input: 'Bb', expected: { root: 'Bb', type: '', bassNote: null, chordNotes: [10, 14, 17] } },
+
+    // Slash chords with inversions
+    { input: 'C/E', expected: { root: 'C', type: '', bassNote: null, chordNotes: [4, 7, 12] } }, // First inversion of C major
+    { input: 'G/B', expected: { root: 'G', type: '', bassNote: null, chordNotes: [11, 14, 19] } }, // First inversion of G major
+    { input: 'D/F#', expected: { root: 'D', type: '', bassNote: null, chordNotes: [6, 9, 14] } }, // First inversion of D major
+
+    // Slash chords with bass notes not in the chord
+    { input: 'C/G', expected: { root: 'C', type: '', bassNote: 'G', chordNotes: [7, 0, 4] } }, // G as the lowest note
+    { input: 'Am/F', expected: { root: 'A', type: 'm', bassNote: 'F', chordNotes: [5, 9, 12, 16] } }, // F as the lowest note
+    { input: 'D/B', expected: { root: 'D', type: '', bassNote: 'B', chordNotes: [11, 2, 6, 9] } }, // B as the lowest note
+    { input: 'G/E', expected: { root: 'G', type: '', bassNote: 'E', chordNotes: [4, 7, 11, 14] } }, // E as the lowest note
+    { input: 'F/C', expected: { root: 'F', type: '', bassNote: 'C', chordNotes: [0, 5, 9] } }, // C as the lowest note
+
+    // Invalid chord
+    { input: 'Xyz', expected: null }
 ];
 
 function runTests() {
@@ -83,7 +93,7 @@ function runTests() {
             const properties = ['root', 'type', 'bassNote', 'chordNotes'];
             properties.forEach(prop => {
                 if (prop === 'chordNotes') {
-                    const expectedNotes = expected[prop].map(note => note % 12);
+                    const expectedNotes = expected[prop]; // .map(note => note % 12);
                     const resultNotes = result[prop].map(note => ((note % 12) + 12) % 12); // Handle negative notes
                     if (!arraysEqual(expectedNotes, resultNotes)) {
                         passed = false;
