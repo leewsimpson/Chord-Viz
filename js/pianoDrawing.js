@@ -58,7 +58,7 @@ export function highlightKeys(ctx, { chordNotes, bassNote }) {
         const noteValue = note % 12;
         if (whiteKeyIndices.includes(noteValue)) {
             const whiteKeyIndex = getWhiteKeyIndex(noteValue);
-            const octave = Math.floor((note - 48) / 12); // Adjust for middle C (C4) being 48
+            const octave = Math.floor(note / 12); // Simplified octave calculation
             const whiteX = (whiteKeyIndex + octave * 7) * whiteKeyWidth;
             console.log(`Drawing white key: note=${note}, noteValue=${noteValue}, x=${whiteX}`);
             ctx.beginPath();
@@ -86,13 +86,9 @@ export function highlightKeys(ctx, { chordNotes, bassNote }) {
             ctx.beginPath();
             ctx.rect(x, 0, blackKeyWidth, blackKeyHeight);
             
-            const matchingNote = chordNotes.find(note => {
-                const noteValue = note % 12;
-                const noteOctave = Math.floor((note - 48) / 12); // Adjust for middle C (C4) being 48
-                return noteValue === pos.note && noteOctave === octave;
-            });
+            const matchingNote = chordNotes.find(note => note % 12 === pos.note);
 
-            if (matchingNote) {
+            if (matchingNote !== undefined) {
                 ctx.fillStyle = matchingNote === bassNote ? darkBassColor : darkChordColor;
                 console.log(`Drawing black ${matchingNote === bassNote ? 'bass' : 'chord'} key: note=${pos.note}, x=${x}`);
             } else {
