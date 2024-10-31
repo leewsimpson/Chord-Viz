@@ -68,6 +68,8 @@ export function parseChord(chordName) {
         // Special case for 'M7' which might be interpreted as 'm7'
         if (type.toUpperCase() === 'M7' || type.toLowerCase() === 'maj7') {
             type = 'M7';
+        } else if (type.toLowerCase() === 'm7') {
+            type = 'm7';
         } else {
             type = '';
         }
@@ -76,7 +78,13 @@ export function parseChord(chordName) {
     const baseNote = notePositions[root];
     const intervals = chordTypes[type];
 
-    let chordNotes = intervals.map(interval => baseNote + interval);
+    let chordNotes = intervals.map(interval => {
+        let note = baseNote + interval;
+        while (note < baseNote) {
+            note += 12;
+        }
+        return note;
+    });
 
     // Ensure the chord spans multiple octaves if necessary
     for (let i = 1; i < chordNotes.length; i++) {
@@ -97,6 +105,12 @@ export function parseChord(chordName) {
         // Adjust the bass note to be below the root note if necessary
         while (bassNoteValue >= chordNotes[0]) {
             bassNoteValue -= 12;
+        }
+
+        // If the bass note is already in the chord, remove it from its current position
+        const bassNoteIndex = chordNotes.indexOf(bassNoteValue % 12);
+        if (bassNoteIndex !== -1) {
+            chordNotes.splice(bassNoteIndex, 1);
         }
 
         // Add the bass note to the beginning of the chord
