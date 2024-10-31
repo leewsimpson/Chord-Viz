@@ -41,7 +41,6 @@ function getWhiteKeyIndex(note) {
 }
 
 export function highlightKeys(ctx, { chordNotes, bassNote }) {
-    console.log('Highlighting keys:', { chordNotes, bassNote });
     drawPiano(ctx);  // Draw the piano background first
     const whiteKeyWidth = 22;
     const whiteKeyHeight = 100;
@@ -54,12 +53,12 @@ export function highlightKeys(ctx, { chordNotes, bassNote }) {
     const darkChordColor = '#2C5282'; // Dark blue for black chord notes
     const darkBassColor = '#A04000';  // Dark orange for black bass notes
 
-    // First draw all white keys
     chordNotes.forEach(note => {
         const noteValue = ((note % 12) + 12) % 12;  // Ensure positive value
+        const octave = Math.floor(note / 12);
+
         if (whiteKeyIndices.includes(noteValue)) {
             const whiteKeyIndex = getWhiteKeyIndex(noteValue);
-            const octave = Math.floor(note / 12);
             const whiteX = (whiteKeyIndex + octave * 7) * whiteKeyWidth;
             ctx.beginPath();
             ctx.rect(whiteX, 0, whiteKeyWidth, whiteKeyHeight);
@@ -68,32 +67,13 @@ export function highlightKeys(ctx, { chordNotes, bassNote }) {
             ctx.strokeStyle = '#000';
             ctx.lineWidth = 2;
             ctx.stroke();
-        }
-    });
-
-    // Then draw all black keys on top
-    const blackKeyPositions = [
-        { x: 1, note: 1 },  // C#
-        { x: 2, note: 3 },  // D#
-        { x: 4, note: 6 },  // F#
-        { x: 5, note: 8 },  // G#
-        { x: 6, note: 10 }  // A#
-    ];
-
-    for (let octave = 0; octave < 2; octave++) {
-        blackKeyPositions.forEach(pos => {
-            const x = (pos.x + octave * 7) * whiteKeyWidth - blackKeyWidth/2;
+        } else {
+            const blackKeyIndex = blackKeyIndices.indexOf(noteValue);
+            const x = ((blackKeyIndex < 2 ? blackKeyIndex + 1 : blackKeyIndex + 2) + octave * 7) * whiteKeyWidth - blackKeyWidth/2;
             ctx.beginPath();
             ctx.rect(x, 0, blackKeyWidth, blackKeyHeight);
-            
-            const matchingNote = chordNotes.find(note => note % 12 === pos.note);
-
-            if (matchingNote !== undefined) {
-                ctx.fillStyle = matchingNote === bassNote ? darkBassColor : darkChordColor;
-            } else {
-                ctx.fillStyle = '#000';
-            }
+            ctx.fillStyle = note === bassNote ? darkBassColor : darkChordColor;
             ctx.fill();
-        });
-    }
+        }
+    });
 }
