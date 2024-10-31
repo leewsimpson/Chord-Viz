@@ -30,9 +30,10 @@ export function parseChord(chordName) {
             bassNote = bassNote.replace('b', '');
             bassNoteValue = (notePositions[bassNote] - 1 + 12) % 12;
         }
-        if (!chordNotes.includes(bassNoteValue)) {
-            chordNotes.push(bassNoteValue);
-        }
+        // Remove the bass note if it's already in the chord
+        chordNotes = chordNotes.filter(note => note !== bassNoteValue);
+        // Add the bass note to the beginning of the array
+        chordNotes.unshift(bassNoteValue);
     }
 
     console.log('Parsed chord:', {
