@@ -75,7 +75,7 @@ export function parseChord(chordName) {
 
     // Adjust octaves for notes that wrap around
     for (let i = 1; i < chordNotes.length; i++) {
-        while (chordNotes[i] < chordNotes[i-1]) {
+        while (chordNotes[i] <= chordNotes[i-1]) {
             chordNotes[i] += 12;
         }
     }
