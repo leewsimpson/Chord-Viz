@@ -74,10 +74,12 @@ export function parseChord(chordName) {
     let chordNotes = intervals.map(interval => (baseNote + interval));
 
     // Adjust octaves for notes that wrap around
-    for (let i = 1; i < chordNotes.length; i++) {
-        while (chordNotes[i] <= chordNotes[i-1]) {
-            chordNotes[i] += 12;
+    let baseOctave = 0;
+    for (let i = 0; i < chordNotes.length; i++) {
+        while (chordNotes[i] + baseOctave * 12 <= (i > 0 ? chordNotes[i-1] : baseNote - 1)) {
+            baseOctave++;
         }
+        chordNotes[i] += baseOctave * 12;
     }
 
     let bassNoteValue = null;
