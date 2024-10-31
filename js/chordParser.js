@@ -81,14 +81,8 @@ export function parseChord(chordName) {
         }
     }
 
-    // Ensure all notes are within -11 to 11
-    chordNotes = chordNotes.map(note => {
-        if (note < 0) {
-            return ((note + 12) % 12) - 12;
-        } else {
-            return note % 12;
-        }
-    });
+    // Ensure all notes are within 0 to 11
+    chordNotes = chordNotes.map(note => (note + 12) % 12);
 
     console.log('Parsed chord:', {
         chordName: originalChordName,
@@ -103,7 +97,7 @@ export function parseChord(chordName) {
         chordName: originalChordName,
         root,
         type,
-        bassNote: null,
+        bassNote: bassNote || null,
         chordNotes
     };
 }
