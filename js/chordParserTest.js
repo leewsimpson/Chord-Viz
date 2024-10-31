@@ -86,6 +86,6 @@ function arraysEqual(a, b) {
 }
 
 // Run tests only if this script is being run directly
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (import.meta.url === import.meta.resolve('./chordParserTest.js')) {
     runTests();
 }
