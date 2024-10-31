@@ -10,7 +10,7 @@ const chordTypes = {
     'maj7': [0, 4, 7, 11],
     'm7': [0, 3, 7, 10],
     'm7b5': [0, 3, 6, 10],
-    'ø': [0, 3, 6, 10], // Alternative notation for m7b5
+    'ø': [0, 3, 6, 10],
     'sus4': [0, 5, 7],
     'sus2': [0, 2, 7],
     '6': [0, 4, 7, 9],
@@ -48,31 +48,26 @@ export function parseChord(chordName) {
     const originalChordName = chordName;
     chordName = chordName.trim();
 
-    // Use regex to parse the chord name
     const regex = /^([A-Ga-g](?:#|b)?)(.*?)(?:\/([A-Ga-g](?:#|b)?))?$/;
     const match = chordName.match(regex);
     if (!match) return null;
 
     let [_, root, type, bassNote] = match;
 
-    // Normalize root, type, and bassNote
     root = root.charAt(0).toUpperCase() + root.slice(1).toLowerCase();
     type = type.toLowerCase();
     if (bassNote) {
         bassNote = bassNote.charAt(0).toUpperCase() + bassNote.slice(1).toLowerCase();
     }
 
-    // Check if root is valid
     if (!(root in notePositions)) {
         return null;
     }
 
-    // If type is not in chordTypes, set to ''
     if (!(type in chordTypes)) {
         type = '';
     }
 
-    // Special case for 'maj7'
     if (type === 'maj7') {
         type = 'M7';
     }
@@ -80,34 +75,28 @@ export function parseChord(chordName) {
     const baseNote = notePositions[root];
     const intervals = chordTypes[type];
 
-    // Build chordNotes in the order specified by intervals
-    let chordNotes = intervals.map(interval => (baseNote + interval) % 12);
+    let chordNotes = intervals.map(interval => (baseNote + interval));
 
     let bassNoteValue = null;
 
     if (bassNote) {
-        // Check if bassNote is valid
         if (!(bassNote in notePositions)) {
             return null;
         }
 
         bassNoteValue = notePositions[bassNote];
 
-        // For slash chords, modify the chord notes
-        const bassNoteIndex = chordNotes.indexOf(bassNoteValue);
+        const bassNoteIndex = chordNotes.findIndex(note => note % 12 === bassNoteValue);
         if (bassNoteIndex === -1) {
             chordNotes.unshift(bassNoteValue);
         } else {
-            // Reorder the chord to put the bass note first
-            chordNotes = [bassNoteValue, ...chordNotes.filter((_, index) => index !== bassNoteIndex)];
+            const bassNoteOctave = Math.floor(chordNotes[bassNoteIndex] / 12);
+            chordNotes = [
+                bassNoteValue + bassNoteOctave * 12,
+                ...chordNotes.filter((_, index) => index !== bassNoteIndex)
+            ];
         }
     }
-
-    // Ensure all notes are in the correct octave (starting from baseNote)
-    chordNotes = chordNotes.map(note => {
-        while (note < baseNote) note += 12;
-        return note;
-    });
 
     return {
         chordName: originalChordName,
