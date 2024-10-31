@@ -17,6 +17,8 @@ import { chordTypes, notePositions } from './constants.js';
  * - Handles both uppercase and lowercase input
  * - Recognizes both sharp (#) and flat (b) notations
  * - Supports slash chords (e.g., C/E)
+ *   - Reorders the chord if the bass note is in the chord
+ *   - shows a lower octave bass note if the bass note is not in the chord
  * - Returns null for invalid chord names
  * - Chord notes are represented as MIDI note numbers (0-11, where 0 is C)
  */
