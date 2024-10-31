@@ -52,8 +52,17 @@ export function parseChord(chordName) {
             bassNote = bassNote.replace('b', '');
             bassNoteValue = (notePositions[bassNote] - 1 + 12) % 12;
         }
-        // Reorder chord notes to put bass note first
-        chordNotes = [bassNoteValue, ...chordNotes.filter(note => note !== bassNoteValue)];
+        
+        // If the bass note is not in the chord, add it as the first note
+        if (!chordNotes.includes(bassNoteValue)) {
+            chordNotes.unshift(bassNoteValue);
+        } else {
+            // If the bass note is in the chord, move it to the first position
+            chordNotes = [
+                bassNoteValue,
+                ...chordNotes.filter(note => note !== bassNoteValue)
+            ];
+        }
     }
 
     console.log('Parsed chord:', {
