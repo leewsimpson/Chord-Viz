@@ -30,7 +30,7 @@ const chordTypes = {
  * @property {string} root - The root note of the chord (e.g., 'C', 'C#', 'Db')
  * @property {string} type - The chord type (e.g., '', 'm', 'maj7', '7', 'sus4', 'aug', 'dim')
  * @property {string|null} bassNote - The bass note if specified, or null
- * @property {number[]} chordNotes - Array of MIDI note numbers representing the chord notes
+ * @property {number[]} chordNotes - Array of MIDI note numbers representing the chord notes. starts from 0 and can span multiple octaves
  * @property {number|null} bassNoteValue - MIDI note number of the bass note, or null if not specified
  * 
  * Requirements:
@@ -107,14 +107,6 @@ export function parseChord(chordName) {
         }
     }
 
-    console.log('Parsed chord:', {
-        chordName: originalChordName,
-        root,
-        type,
-        bassNote: bassNote || null,
-        chordNotes,
-        bassNoteValue
-    });
 
     return {
         chordName: originalChordName,
