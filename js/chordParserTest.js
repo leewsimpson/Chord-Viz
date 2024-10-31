@@ -21,7 +21,7 @@ const testCases = [
     { input: 'C11', expected: { root: 'C', type: '11', bassNote: null, chordNotes: [0, 4, 7, 10, 2, 5] } },
     { input: 'C13', expected: { root: 'C', type: '13', bassNote: null, chordNotes: [0, 4, 7, 10, 2, 5, 9] } },
     { input: 'Cadd9', expected: { root: 'C', type: 'add9', bassNote: null, chordNotes: [0, 4, 7, 2] } },
-    { input: 'C/E', expected: { root: 'C', type: '', bassNote: null, chordNotes: [4, 7, 12] } },
+    { input: 'C/E', expected: { root: 'C', type: '', bassNote: 'E', chordNotes: [4, 0, 7], bassNoteValue: 4 } },
 ];
 
 function runTests() {
