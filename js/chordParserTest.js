@@ -2,6 +2,7 @@ import { parseChord } from './chordParser.js';
 import { notePositions } from './constants.js';
 
 const testCases = [
+    { input: 'InvalidChord', expected: null },
     { input: 'C', expected: { root: 'C', type: '', bassNote: null, chordNotes: [0, 4, 7] } },
     { input: 'c', expected: { root: 'C', type: '', bassNote: null, chordNotes: [0, 4, 7] } },
     { input: 'Cm', expected: { root: 'C', type: 'm', bassNote: null, chordNotes: [0, 3, 7] } },
@@ -34,36 +35,30 @@ function runTests() {
         let passed = true;
         let errorMessage = '';
 
-        if (!result) {
+        if (expected === null) {
+            if (result !== null) {
+                passed = false;
+                errorMessage = `Expected null, but got ${JSON.stringify(result)}`;
+            }
+        } else if (!result) {
             passed = false;
             errorMessage = 'Parsing failed (returned null)';
         } else {
-            // Check root note
-            if (result.root !== expected.root) {
-                passed = false;
-                errorMessage += `Root note mismatch. Expected: ${expected.root}, Got: ${result.root}\n`;
-            }
-
-            // Check chord notes
-            if (expected.chordNotes) {
-                const expectedNotes = expected.chordNotes.map(note => note % 12);
-                const resultNotes = result.chordNotes.map(note => ((note % 12) + 12) % 12); // Handle negative notes
-                if (!arraysEqual(expectedNotes, resultNotes)) {
+            // Check all properties
+            const properties = ['root', 'type', 'bassNote', 'chordNotes', 'bassNoteValue'];
+            properties.forEach(prop => {
+                if (prop === 'chordNotes') {
+                    const expectedNotes = expected[prop].map(note => note % 12);
+                    const resultNotes = result[prop].map(note => ((note % 12) + 12) % 12); // Handle negative notes
+                    if (!arraysEqual(expectedNotes, resultNotes)) {
+                        passed = false;
+                        errorMessage += `${prop} mismatch. Expected: [${expectedNotes}], Got: [${resultNotes}]\n`;
+                    }
+                } else if (result[prop] !== expected[prop]) {
                     passed = false;
-                    errorMessage += `Chord notes mismatch. Expected: [${expectedNotes}], Got: [${resultNotes}]\n`;
+                    errorMessage += `${prop} mismatch. Expected: ${expected[prop]}, Got: ${result[prop]}\n`;
                 }
-            }
-
-            // Check bass note
-            if (expected.bassNote) {
-                if (result.bassNote !== expected.bassNote) {
-                    passed = false;
-                    errorMessage += `Bass note mismatch. Expected: ${expected.bassNote}, Got: ${result.bassNote}\n`;
-                }
-            } else if (result.bassNote !== null) {
-                passed = false;
-                errorMessage += `Unexpected bass note. Expected: null, Got: ${result.bassNote}\n`;
-            }
+            });
         }
 
         if (passed) {
@@ -90,5 +85,7 @@ function arraysEqual(a, b) {
     return a.every((val, index) => val === b[index]);
 }
 
-
-runTests();
+// Run tests only if this script is being run directly
+if (import.meta.url === `file://${process.argv[1]}`) {
+    runTests();
+}
