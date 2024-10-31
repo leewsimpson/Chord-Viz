@@ -66,7 +66,7 @@ export function parseChord(chordName) {
             return null;
         }
 
-        bassNoteValue = notePositions[bassNote];
+        const bassNoteValue = notePositions[bassNote];
 
         if (chordNotes.includes(bassNoteValue)) {
             // Reorder chordNotes to have bassNoteValue first
@@ -76,11 +76,8 @@ export function parseChord(chordName) {
             ];
         } else {
             // Bass note is not in chordNotes
-            // Add bassNoteValue at lower octave (negative value)
-            chordNotes = [
-                bassNoteValue - 12,
-                ...chordNotes
-            ];
+            // Add bassNoteValue at the beginning of the array
+            chordNotes = [bassNoteValue, ...chordNotes];
         }
     }
 
@@ -106,8 +103,7 @@ export function parseChord(chordName) {
         chordName: originalChordName,
         root,
         type,
-        bassNote: bassNote || null,
-        chordNotes,
-        bassNoteValue
+        bassNote: null,
+        chordNotes
     };
 }
