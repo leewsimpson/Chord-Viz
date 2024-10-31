@@ -16,7 +16,10 @@ function createChordVisualization(chordName, lyrics) {
 
     const parsedChord = parseChord(chordName);
     if (parsedChord) {
+        console.log(`Highlighting chord: ${chordName}`, parsedChord);
         highlightKeys(ctx, parsedChord);
+    } else {
+        console.warn(`Failed to parse chord: ${chordName}`);
     }
 
     container.appendChild(canvas);

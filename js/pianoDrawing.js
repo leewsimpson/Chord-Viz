@@ -65,6 +65,7 @@ export function highlightKeys(ctx, { chordNotes, bassNote }) {
             ctx.fillStyle = chordColor;
             ctx.fill();
             ctx.strokeStyle = '#000';
+            ctx.lineWidth = 2;
             ctx.stroke();
         }
     });
@@ -79,6 +80,7 @@ export function highlightKeys(ctx, { chordNotes, bassNote }) {
         ctx.fillStyle = bassColor;
         ctx.fill();
         ctx.strokeStyle = '#000';
+        ctx.lineWidth = 2;
         ctx.stroke();
     }
 
