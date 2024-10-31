@@ -19,7 +19,12 @@ function createChordVisualization(chordName, lyrics) {
     console.log('Parsed chord:', parsedChord);
     if (parsedChord) {
         console.log(`Highlighting chord: ${chordName}`, parsedChord);
-        highlightKeys(ctx, parsedChord);
+        // Ensure parsedChord has the correct structure
+        const chordToHighlight = {
+            chordNotes: parsedChord.chordNotes || [],
+            bassNote: parsedChord.bassNote
+        };
+        highlightKeys(ctx, chordToHighlight);
     } else {
         console.warn(`Failed to parse chord: ${chordName}`);
     }

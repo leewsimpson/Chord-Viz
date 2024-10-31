@@ -72,6 +72,9 @@ export function highlightKeys(ctx, { chordNotes, bassNote }) {
         }
     });
 
+    // Debug: Log the chordNotes array
+    console.log('Chord notes:', chordNotes);
+
     // 2. Draw white bass note
     if (bassNote !== null && whiteKeyIndices.includes(bassNote % 12)) {
         const whiteKeyIndex = getWhiteKeyIndex(bassNote);

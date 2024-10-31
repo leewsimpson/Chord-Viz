@@ -11,6 +11,11 @@ export function parseChord(chordName) {
     const [_, root, type, bassNote] = match;
     if (!(root in notePositions)) return null;
     
+    // Debug: Log the parsed chord components
+    console.log('Parsed chord components:', { root, type, bassNote });
+
+    // Ensure the root note is included in the chord notes
+    const chordNotes = [notePositions[root]];
     // Convert type to lowercase for matching with chordTypes
     const lowerType = type.toLowerCase();
     if (!(lowerType in chordTypes)) return null;
