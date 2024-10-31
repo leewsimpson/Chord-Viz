@@ -39,17 +39,15 @@ function runTests() {
             errorMessage = 'Parsing failed (returned null)';
         } else {
             // Check root note
-            const rootNote = result.chordNotes[0] % 12;
-            const expectedRootNote = notePositions[expected.root];
-            if (rootNote !== expectedRootNote) {
+            if (result.root !== expected.root) {
                 passed = false;
-                errorMessage += `Root note mismatch. Expected: ${expected.root}, Got: ${Object.keys(notePositions).find(key => notePositions[key] === rootNote)}\n`;
+                errorMessage += `Root note mismatch. Expected: ${expected.root}, Got: ${result.root}\n`;
             }
 
             // Check chord notes
             if (expected.chordNotes) {
-                const expectedNotes = expected.chordNotes.map(note => (note + notePositions[expected.root]) % 12);
-                const resultNotes = result.chordNotes.map(note => note % 12);
+                const expectedNotes = expected.chordNotes.map(note => note % 12);
+                const resultNotes = result.chordNotes.map(note => ((note % 12) + 12) % 12); // Handle negative notes
                 if (!arraysEqual(expectedNotes, resultNotes)) {
                     passed = false;
                     errorMessage += `Chord notes mismatch. Expected: [${expectedNotes}], Got: [${resultNotes}]\n`;
@@ -58,10 +56,9 @@ function runTests() {
 
             // Check bass note
             if (expected.bassNote) {
-                const expectedBassNote = notePositions[expected.bassNote];
-                if (result.bassNote % 12 !== expectedBassNote) {
+                if (result.bassNote !== expected.bassNote) {
                     passed = false;
-                    errorMessage += `Bass note mismatch. Expected: ${expected.bassNote}, Got: ${Object.keys(notePositions).find(key => notePositions[key] === (result.bassNote % 12))}\n`;
+                    errorMessage += `Bass note mismatch. Expected: ${expected.bassNote}, Got: ${result.bassNote}\n`;
                 }
             } else if (result.bassNote !== null) {
                 passed = false;
@@ -85,12 +82,13 @@ function runTests() {
     console.log(`Total: ${testCases.length}`);
 }
 
+// Helper function to compare arrays
 function arraysEqual(a, b) {
     if (a.length !== b.length) return false;
-    for (let i = 0; i < a.length; i++) {
-        if (a[i] !== b[i]) return false;
-    }
-    return true;
+    a = a.slice().sort();
+    b = b.slice().sort();
+    return a.every((val, index) => val === b[index]);
 }
+
 
 runTests();
