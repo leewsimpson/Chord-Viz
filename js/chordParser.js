@@ -15,7 +15,7 @@ export function parseChord(chordName) {
     console.log('Parsed chord components:', { root, type, bassNote });
 
     // Convert type to lowercase for matching with chordTypes
-    const lowerType = type.toLowerCase();
+    let lowerType = type.toLowerCase();
     if (!(lowerType in chordTypes)) {
         // If the chord type is not recognized, default to a major chord
         lowerType = '';
@@ -35,9 +35,9 @@ export function parseChord(chordName) {
 
     let bassNoteValue = null;
     if (bassNote) {
-        bassNoteValue = notePositions[bassNote];
+        bassNoteValue = notePositions[bassNote] + 48; // Add bass note an octave lower
         if (!chordNotes.includes(bassNoteValue % 12)) {
-            chordNotes.unshift(bassNoteValue + 48); // Add bass note an octave lower
+            chordNotes.unshift(bassNoteValue);
         }
     }
 
