@@ -81,10 +81,7 @@ export function parseChord(chordName) {
     const intervals = chordTypes[type];
 
     // Build chordNotes in the order specified by intervals
-    let chordNotes = intervals.map(interval => {
-        let note = baseNote + interval;
-        return note >= 12 ? note : note + 12; // Ensure notes are in the next octave if needed
-    });
+    let chordNotes = intervals.map(interval => (baseNote + interval) % 12);
 
     let bassNoteValue = null;
 
@@ -96,9 +93,21 @@ export function parseChord(chordName) {
 
         bassNoteValue = notePositions[bassNote];
 
-        // For slash chords, we don't modify the chord notes
-        // Instead, we'll return the bass note separately
+        // For slash chords, modify the chord notes
+        if (!chordNotes.includes(bassNoteValue)) {
+            chordNotes.unshift(bassNoteValue);
+        } else {
+            // Reorder the chord to put the bass note first
+            chordNotes = [bassNoteValue, ...chordNotes.filter(note => note !== bassNoteValue)];
+        }
     }
+
+    // Ensure all notes are in the correct octave (between baseNote and baseNote + 11)
+    chordNotes = chordNotes.map(note => {
+        while (note < baseNote) note += 12;
+        while (note > baseNote + 11) note -= 12;
+        return note;
+    });
 
     return {
         chordName: originalChordName,
