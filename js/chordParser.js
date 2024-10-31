@@ -56,7 +56,7 @@ export function parseChord(chordName) {
     const intervals = chordTypes[type];
 
     // Build chordNotes in the order specified by intervals
-    let chordNotes = intervals.map(interval => (baseNote + interval) % 12);
+    let chordNotes = intervals.map(interval => ((baseNote + interval) % 12 + 12) % 12);
 
     let bassNoteValue = null;
 
@@ -66,7 +66,7 @@ export function parseChord(chordName) {
             return null;
         }
 
-        const bassNoteValue = notePositions[bassNote];
+        bassNoteValue = notePositions[bassNote];
 
         if (chordNotes.includes(bassNoteValue)) {
             // Reorder chordNotes to have bassNoteValue first
