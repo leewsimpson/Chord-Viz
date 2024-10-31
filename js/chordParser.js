@@ -20,8 +20,9 @@ export function parseChord(chordName) {
     let bassNoteValue = null;
     if (bassNote) {
         bassNoteValue = notePositions[bassNote];
-        chordNotes = chordNotes.filter(note => note !== bassNoteValue);
-        chordNotes.unshift(bassNoteValue);
+        if (!chordNotes.includes(bassNoteValue)) {
+            chordNotes.push(bassNoteValue);
+        }
     }
 
     console.log('Parsed chord:', {
