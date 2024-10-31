@@ -95,6 +95,12 @@ document.addEventListener('DOMContentLoaded', () => {
         helpPopup.classList.toggle('show');
     });
 
+    // Print icon functionality
+    const printIcon = document.getElementById('printIcon');
+    printIcon.addEventListener('click', () => {
+        window.print();
+    });
+
     // Close popup when clicking outside
     document.addEventListener('click', (e) => {
         if (helpPopup.classList.contains('show') && 
