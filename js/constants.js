@@ -19,14 +19,15 @@ export const chordTypes = {
     'dim7': [0, 3, 6, 9],    // Diminished 7th
     '5': [0, 7],             // Power chord
     'sus4': [0, 5, 7],       // Suspended 4th
+    'sus2': [0, 2, 7],       // Suspended 2th
     'm7b5': [0, 3, 6, 10],   // Half-diminished 7th
     '6': [0, 4, 7, 9],       // Major 6th
     'm6': [0, 3, 7, 9],      // Minor 6th
-    '9': [0, 4, 7, 10, 2],   // Dominant 9th
-    'm9': [0, 3, 7, 10, 2],  // Minor 9th
-    '11': [0, 4, 7, 10, 2, 5], // 11th
-    '13': [0, 4, 7, 10, 2, 5, 9], // 13th
-    'add9': [0, 4, 7, 2]     // Add 9
+    '9': [0, 4, 7, 10, 14],   // Dominant 9th
+    'm9': [0, 3, 7, 10, 14],  // Minor 9th
+    '11': [0, 4, 7, 10, 14, 17], // 11th
+    '13': [0, 4, 7, 10, 14, 17, 21], // 13th
+    'add9': [0, 2, 4, 7]     // Add 9
 };
 
 export const whiteKeyIndices = [0, 2, 4, 5, 7, 9, 11];

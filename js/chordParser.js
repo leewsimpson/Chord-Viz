@@ -19,27 +19,39 @@ export function parseChord(chordName) {
     if (!root || !(root in notePositions)) return null;
 
     const rootValue = notePositions[root];
-    const intervals = chordTypes[type] || chordTypes[''];
-    let chordNotes = intervals.map(interval => rootValue + interval);
-
-    // Adjust notes to span multiple octaves if necessary
-    let baseOctave = Math.floor(rootValue / 12);
-    chordNotes = chordNotes.map(note => {
-        while (note < rootValue) note += 12;
-        while (note >= rootValue + 12) note -= 12;
-        return note;
-    });
-
-    let bassNoteValue = null;
-    if (bassNote) {
-        bassNoteValue = notePositions[bassNote];
-        if (!chordNotes.includes(bassNoteValue)) {
-            // Add bass note if it's not in the chord
-            chordNotes.unshift(bassNoteValue);
-        }
+    const intervals = chordTypes[type];
+    if (intervals === undefined) {
+        console.warn(`Unknown chord type: ${type}`);
+        return null;
     }
 
-    // Sort the chord notes
+    // Calculate chord notes based on root
+    let chordNotes = intervals.map(interval => rootValue + interval);
+
+    // If there is a bass note, include it as the lowest note
+    if (bassNote) {
+        const bassValue = notePositions[bassNote];
+        if (!chordNotes.includes(bassValue)) {
+            chordNotes.push(bassValue);
+        }
+
+        // Adjust chord notes to be at or above the bass note
+        chordNotes = chordNotes.map(note => {
+            while (note < bassValue) {
+                note += 12;
+            }
+            // Keep notes within one octave above the bass note
+            while (note >= bassValue + 12) {
+                note -= 12;
+            }
+            return note;
+        });
+    }
+
+    // Remove duplicate notes
+    chordNotes = Array.from(new Set(chordNotes));
+
+    // Sort the chord notes in ascending order
     chordNotes.sort((a, b) => a - b);
 
     return {
@@ -47,8 +59,7 @@ export function parseChord(chordName) {
         root,
         type,
         bassNote,
-        chordNotes,
-        bassNoteValue
+        chordNotes
     };
 }
 
@@ -59,10 +70,10 @@ function normalizeNote(note) {
 function normalizeType(type) {
     type = type.toLowerCase();
     if (type === 'maj7' || type === 'm7') return type;
-    if (type === 'm7' || type === '7' || type === 'dim' || type === 'aug' || type === 'sus4' || type === 'sus2') return type;
-    if (type === '9' || type === '11' || type === '13' || type === 'add9') return type;
+    if (['7', 'dim', 'aug', 'sus4', 'sus2'].includes(type)) return type;
+    if (['9', '11', '13', 'add9'].includes(type)) return type;
     if (type === 'm') return type;
-    if (type === 'maj7' || type === 'M7') return 'maj7';
+    if (type === 'M7') return 'maj7';
     if (type === '6') return type;
     return '';
 }

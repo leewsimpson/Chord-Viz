@@ -3,7 +3,7 @@ import { whiteKeyIndices, blackKeyIndices } from './constants.js';
 export function createChordCanvas() {
     const canvas = document.createElement('canvas');
     canvas.width = 280;
-    canvas.height = 120;
+    canvas.height = 100;
     return canvas;
 }
 
@@ -60,9 +60,9 @@ export function highlightKeys(ctx, { chordNotes, bassNote }) {
     const blackKeyHeight = 65;
 
     // Colors for different note types
-    const chordColor = '#4A90E2';     // Light blue for chord notes
+    const chordColor = '#7baee8';     // Light blue for chord notes
     const bassColor = '#E67E22';      // Orange for bass note
-    const darkChordColor = '#2C5282'; // Dark blue for black chord notes
+    const darkChordColor = chordColor; // Dark blue for black chord notes
     const darkBassColor = '#A04000';  // Dark orange for black bass notes
 
     // Highlight white keys first
@@ -77,8 +77,8 @@ export function highlightKeys(ctx, { chordNotes, bassNote }) {
             ctx.rect(whiteX, 0, whiteKeyWidth, whiteKeyHeight);
             ctx.fillStyle = note === bassNote ? bassColor : chordColor;
             ctx.fill();
-            ctx.strokeStyle = '#000';
-            ctx.lineWidth = 2;
+            ctx.strokeStyle = '#4A90E2';
+            ctx.lineWidth = 0;
             ctx.stroke();
         }
     });
