@@ -29,9 +29,14 @@ const testCases = [
     { input: 'Gsus4', expected: { root: 'G', type: 'sus4', bassNote: null, chordNotes: [7, 12, 14] } },
     { input: 'Asus2', expected: { root: 'A', type: 'sus2', bassNote: null, chordNotes: [9, 11, 16] } },
 
+    // 5 chords
+    { input: 'C5', expected: { root: 'C', type: '5', bassNote: null, chordNotes: [0, 7] } },
+    { input: 'A5', expected: { root: 'A', type: '5', bassNote: null, chordNotes: [9, 16] } },
+
     // Sixth chords
     { input: 'C6', expected: { root: 'C', type: '6', bassNote: null, chordNotes: [0, 4, 7, 9] } },
     { input: 'E6', expected: { root: 'E', type: '6', bassNote: null, chordNotes: [4, 8, 11, 13] } },
+
 
     // Ninth chords
     { input: 'C9', expected: { root: 'C', type: '9', bassNote: null, chordNotes: [0, 4, 7, 10, 14] } },

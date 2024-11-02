@@ -70,7 +70,7 @@ function normalizeNote(note) {
 function normalizeType(type) {
     type = type.toLowerCase();
     if (type === 'maj7' || type === 'm7') return type;
-    if (['7', 'dim', 'aug', 'sus4', 'sus2'].includes(type)) return type;
+    if (['7', 'dim', 'aug', 'sus4', 'sus2', '5'].includes(type)) return type;
     if (['9', '11', '13', 'add9'].includes(type)) return type;
     if (type === 'm') return type;
     if (type === 'M7') return 'maj7';
