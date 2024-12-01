@@ -36,6 +36,8 @@ const testCases = [
     // Sixth chords
     { input: 'C6', expected: { root: 'C', type: '6', bassNote: null, chordNotes: [0, 4, 7, 9] } },
     { input: 'E6', expected: { root: 'E', type: '6', bassNote: null, chordNotes: [4, 8, 11, 13] } },
+    { input: 'CM6', expected: { root: 'C', type: 'm6', bassNote: null, chordNotes: [0, 3, 7, 9] } },
+    { input: 'CM6/Eb', expected: { root: 'C', type: 'm6', bassNote: 'Eb', chordNotes: [3, 7, 9, 12] } },
 
 
     // Ninth chords

@@ -66,14 +66,17 @@ export function parseChord(chordName) {
 function normalizeNote(note) {
     return note.charAt(0).toUpperCase() + note.slice(1).toLowerCase();
 }
-
 function normalizeType(type) {
     type = type.toLowerCase();
-    if (type === 'maj7' || type === 'm7') return type;
-    if (['7', 'dim', 'aug', 'sus4', 'sus2', '5'].includes(type)) return type;
-    if (['9', '11', '13', 'add9'].includes(type)) return type;
-    if (type === 'm') return type;
+    if (type === '') return '';
+
+    const validTypes = new Set(['maj7', 'm7', '7', 'dim', 'aug', 'sus4', 'sus2', '5', '9', '11', '13', 'add9', 'm', '6', 'm6']);    
+    if (validTypes.has(type)) return type;
     if (type === 'M7') return 'maj7';
-    if (type === '6') return type;
+    
+    const defaultTypes = new Set(['#']);    
+    if (defaultTypes.has(type)) return '';
+    
+    console.log('Unknown chord type: "' + type + '"');
     return '';
 }

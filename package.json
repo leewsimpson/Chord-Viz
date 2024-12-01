@@ -1,0 +1,9 @@
+{
+  "name": "chord-viz",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Piano chord visualization tool",
+  "scripts": {
+    "test": "node js/chordParserTest.js"
+  }
+}
